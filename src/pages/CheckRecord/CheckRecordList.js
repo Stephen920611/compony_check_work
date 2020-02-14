@@ -486,6 +486,7 @@ class CheckRecordList extends PureComponent {
     setDepart = (data, searchParentCode, departNodes) => {
         data.map( item => {
             if(item.code === searchParentCode && item.type === 'company'){
+                item.nodes.length = 0;
                 departNodes.map(val => {
                     item.nodes.push(val)
                 });
