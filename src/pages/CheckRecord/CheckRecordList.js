@@ -517,8 +517,8 @@ class CheckRecordList extends PureComponent {
                     userId:1,
                     current: currentPage,
                     size: EnumDataSyncPageInfo.defaultPageSize,
-                    startTime: T.lodash.isUndefined(values.startDate) ? '' : T.helper.dateFormat(values.startDate,'YYYY-MM-DD'),      //开始时间
-                    endTime: T.lodash.isUndefined(values.endDate) ? '' : T.helper.dateFormat(values.endDate,'YYYY-MM-DD'),        //结束时间
+                    startTime: T.lodash.isUndefined(values.startDate) ? '' : T.helper.dateFormat(values.startDate),      //开始时间
+                    endTime: T.lodash.isUndefined(values.endDate) ? '' : T.helper.dateFormat(values.endDate),        //结束时间
                     areaId: eventData.type === 'area' ? eventData.backId : eventData.type === 'industry' ? eventData.industryParentId: '' , //县市区Id
                     industryId: eventData.type === 'industry' ? eventData.backId : '', //行业Id 查询行业时 上级县市区ID必传
                     companyId: eventData.type === 'company' ? eventData.backId : '', //公司id
@@ -1193,7 +1193,7 @@ class CheckRecordList extends PureComponent {
                                             // rules: [{required: true, message: '请选择开始时间！'}],
                                             // initialValue: T.moment(new Date(new Date(new Date().toLocaleDateString()).getTime()).getTime()),
                                         })(
-                                            <DatePicker/>
+                                            <DatePicker showTime={true}/>
                                         )}
                                     </Form.Item>
                                 </Col>
@@ -1205,7 +1205,7 @@ class CheckRecordList extends PureComponent {
                                             // rules: [{required: true, message: '请选择结束时间！'}],
                                             // initialValue: T.moment(new Date().getTime()),
                                         })(
-                                            <DatePicker/>
+                                            <DatePicker showTime={true}/>
                                         )}
                                     </Form.Item>
                                 </Col>
