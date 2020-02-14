@@ -524,12 +524,12 @@ class CheckRecordList extends PureComponent {
                     departId: eventData.type === 'depart' ? eventData.backId : '',//部门id
                     // area: T.auth.isAdmin() ? selectedArea === "烟台市" ? '' : selectedArea : loginInfo.data.area,           //县市区(烟台市传空)
                     memberName: T.lodash.isUndefined(values.person) ? '' : values.person,           //被调查人姓名
-                    gender: T.lodash.isUndefined(values.sex) ? '' : values.sex === 'all' ? '' : values.sex,         //性别
+                    gender: T.lodash.isUndefined(values.sex) ? '' : values.sex === 0 ? '' : values.sex,         //性别
                     // idCard: "",         //身份证号
-                    bodyCondition: T.lodash.isUndefined(values.base) ? '' : values.base === '全部' ? '' : values.base,         //被调查人基本情况
+                    bodyCondition: T.lodash.isUndefined(values.base) ? '' : values.base === 0 ? '' : values.base,         //被调查人基本情况
                     // bodyCondition: T.lodash.isUndefined(values.status) ? '' : values.status === '全部' ? '' : values.status,         //身体状况
                     fillUser: T.lodash.isUndefined(values.head) ? '' : values.head,   //摸排人
-                    fillUserId: loginInfo.data.static_auth === 0 ? loginInfo.data.id : ''   //摸排人id
+                    // fillUserId: loginInfo.data.static_auth === 0 ? loginInfo.data.id : ''   //摸排人id
                 };
                 console.log(params, 'params');
                 new Promise((resolve, reject) => {
@@ -567,6 +567,10 @@ class CheckRecordList extends PureComponent {
     resetDataSource = () => {
         const {clickTree} = this.state;
         this.props.form.resetFields();
+        this.props.form.setFieldsValue({
+            startDate: T.moment(new Date().getTime()),
+            endDate: T.moment(new Date().getTime()),
+        });
         this.fetchDataList(clickTree);
     };
 
@@ -910,7 +914,7 @@ class CheckRecordList extends PureComponent {
             return (
                 dataSource.map((item, idx) => {
                     return (
-                        <Option key={item.value} value={item.name}>
+                        <Option key={item.value} value={item.value}>
                             {item.name}
                         </Option>
                     )
@@ -1177,7 +1181,7 @@ class CheckRecordList extends PureComponent {
                                         label='性别'
                                     >
                                         {getFieldDecorator('sex', {
-                                            initialValue: "all",
+                                            initialValue: 0,
                                         })(
                                             <Radio.Group onChange={this.onChange}>
                                                 <Radio value={1}>男</Radio>
@@ -1221,7 +1225,7 @@ class CheckRecordList extends PureComponent {
                                         label='身体状况'
                                     >
                                         {getFieldDecorator('base', {
-                                            initialValue: "全部"
+                                            initialValue: 0
                                         })(
                                             <Select
                                                 getPopupContainer={triggerNode => triggerNode.parentNode}
