@@ -10,6 +10,7 @@ import {
     fetchCheckRecordList,
     fetchSelectInfo,
     fetchTreeNode,
+    fetchTreeDepartment,
     fetchMemberInfoList,
     fetchMemberInfoById,
 } from '@/services/checkRecord/checkRecord';
@@ -37,15 +38,16 @@ export default {
     },
 
     effects: {
-        //获取摸排记录列表页面
-        * fetchTreeNodeAction({userId, resolve, reject}, {call, put}) {
+        //根据公司id,查询部门树
+        * fetchTreeDepartmentAction({companyId, resolve, reject}, {call, put}) {
             try {
-                const response = yield call(fetchTreeNode, userId);
+                const response = yield call(fetchTreeDepartment, {companyId});
                 resolve(response);
             } catch (error) {
                 reject(error);
             }
         },
+
         //获取列表页面
         * fetchMemberInfoListAction({params, resolve, reject}, {call, put}) {
             try {

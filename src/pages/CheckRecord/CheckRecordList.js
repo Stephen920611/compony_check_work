@@ -44,10 +44,12 @@ import PageHeaderWrapper from '@/components/PageHeaderWrapper'; // @ 表示相�
 
 //数据分发页面
 /* eslint react/no-multi-comp:0 */
-@connect(({checkRecord, loading}) => ({
+@connect(({checkRecord, jobStatistics,loading}) => ({
     checkRecord,
-    // fetchTreeStatus: loading.effects['checkRecord/getDataResourceTreeAction'],
+    jobStatistics,
+    fetchTreeStatus: loading.effects['jobStatistics/fetchTreeNodeAction'],
     fetchCheckRecordListStatus: loading.effects['checkRecord/fetchCheckRecordListAction'],
+    fetchMemberInfoListStatus: loading.effects['checkRecord/fetchMemberInfoListAction'],
 }))
 // class CheckRecordList
 @Form.create()
@@ -361,30 +363,20 @@ class CheckRecordList extends PureComponent {
         startPageNum: '',
         endPageNum: '',
         maxPageSize: 9999,
+        selectTreeKey: [],  //树选择的key值
+        expandTreeKey: [],  //树展开的key值
+        treeNewData: [],    //后台返回树节点
+        treeBackData: [],   //用来备份的节点，如果有部门的话，就要拼接
+        autoExpandParent: true,     //是否自动展开
     };
 
     componentDidMount() {
         const {dispatch} = this.props;
         const {user} = this.state;
         let self = this;
+
         //获取树
-        new Promise((resolve, reject) => {
-            dispatch({
-                type: 'checkRecord/fetchTreeNodeAction',
-                userId:0,
-                resolve,
-                reject,
-            });
-        }).then(response => {
-            if (response.result === 'true') {
-                console.log('1111',response.data);
-                this.setState({
-                    treeHeight: window.innerHeight - 141,
-                })
-            } else {
-                T.prompt.error(response.message);
-            }
-        });
+        this.fetchTreeData()
 
         //获取被调查人基本情况
        /* new Promise((resolve, reject) => {
@@ -433,15 +425,83 @@ class CheckRecordList extends PureComponent {
                 T.prompt.error(response.msg);
             }
         });*/
-        this.fetchDataList();
+        // this.fetchDataList();
     }
 
+    //获取树
+    fetchTreeData = () => {
+        let loginInfo = T.auth.getLoginInfo();
+        let self = this;
+        const {dispatch} = this.props;
+        new Promise((resolve, reject) => {
+            dispatch({
+                type: 'jobStatistics/fetchTreeNodeAction',
+                userId: loginInfo.data.user.id,
+                resolve,
+                reject,
+            });
+        }).then(response => {
+            console.log(response,'树节点');
+            if (response.code === 0) {
+                self.setState({
+                    treeNewData: response.data,
+                    treeBackData: response.data,
+                })
+            } else {
+                T.prompt.error(response.msg);
+            }
+        });
+    };
+
+    //获取树下的部门
+    fetchDepartId = (eventData) => {
+        const {dispatch, form, checkRecord} = this.props;
+        const {treeBackData, treeNewData} = this.state;
+        console.log(eventData,'eventData');
+        let self = this;
+        new Promise((resolve, reject) => {
+            dispatch({
+                type: 'checkRecord/fetchTreeDepartmentAction',
+                companyId: eventData.backId,
+                resolve,
+                reject,
+            });
+        }).then(response => {
+            console.log(response,'部门节点');
+            if (response.code === 0) {
+                if(response.data.length > 0){
+                    let searchParentCode = response.data[0].hasOwnProperty('parentCode') ? response.data[0].parentCode : '-';
+                    let a = self.setDepart(treeNewData, searchParentCode, response.data);
+                    console.log(a,'aaaaaa');
+                }
+                // self.setState({
+                //     treeNewData: response.data
+                // })
+            } else {
+                T.prompt.error(response.msg);
+            }
+        });
+    };
+
+    setDepart = (data, searchParentCode, departNodes) => {
+        data.map( item => {
+            if(item.code === searchParentCode && item.type === 'company'){
+                departNodes.map(val => {
+                    item.nodes.push(val)
+                });
+                console.log(data,'data');
+            }else {
+                this.setDepart(item.nodes, searchParentCode, departNodes)
+            }
+        });
+    };
+
     //获取当前页数数据
-    fetchDataList = () => {
+    fetchDataList = (eventData) => {
+        console.log(eventData,'eventData');
         const {dispatch, form, checkRecord} = this.props;
         const {currentPage, selectedKey, treeData, selectedArea} = this.state;
         let self = this;
-
         form.validateFieldsAndScroll((err, values) => {
             if (!err) {
                 //地区分类
@@ -459,9 +519,9 @@ class CheckRecordList extends PureComponent {
                     size: EnumDataSyncPageInfo.defaultPageSize,
                     startTime: T.lodash.isUndefined(values.startDate) ? '' : T.helper.dateFormat(values.startDate,'YYYY-MM-DD'),      //开始时间
                     endTime: T.lodash.isUndefined(values.endDate) ? '' : T.helper.dateFormat(values.endDate,'YYYY-MM-DD'),        //结束时间
-                    areaId:0,//县市区Id
-                    industryId:'',//行业Id 查询行业时 上级县市区ID必传
-                    companyId:'',//公司id
+                    areaId: eventData.type === 'area' ? eventData.backId : eventData.type === 'industry' ? eventData.industryParentId: '' , //县市区Id
+                    industryId: eventData.type === 'industry' ? eventData.backId : '', //行业Id 查询行业时 上级县市区ID必传
+                    companyId: eventData.type === 'company' ? eventData.backId : '', //公司id
                     departId:'',//部门id
                     // area: T.auth.isAdmin() ? selectedArea === "烟台市" ? '' : selectedArea : loginInfo.data.area,           //县市区(烟台市传空)
                     memberName: T.lodash.isUndefined(values.person) ? '' : values.person,           //被调查人姓名
@@ -472,6 +532,7 @@ class CheckRecordList extends PureComponent {
                     fillUser: T.lodash.isUndefined(values.head) ? '' : values.head,   //摸排人
                     fillUserId: loginInfo.data.static_auth === 0 ? loginInfo.data.id : ''   //摸排人id
                 };
+                console.log(params,'params');
                 new Promise((resolve, reject) => {
                     dispatch({
                         type: 'checkRecord/fetchMemberInfoListAction',
@@ -513,44 +574,70 @@ class CheckRecordList extends PureComponent {
     onSelect = (keys, event) => {
         //点击选中事件，属性可以打印查看
         const eventData = event.node.props;
-        // this.props.form.setFieldsValue({
-        //     resourceType: eventData.name
-        // });
         let self = this;
+        console.log(eventData,'eventData');
+
+        if(eventData.type === 'company'){
+            this.fetchDepartId(eventData)
+        }
         this.setState({
-            selectedKey: keys[0],
+            selectTreeKey: keys,
             selectedArea: eventData.name
         }, () => {
-            self.fetchDataList()
+            self.fetchDataList(eventData)
         });
     };
 
     //渲染树节点
-    renderTreeNodes = data => {
+    /**
+     *
+     * @param data
+     * @param industryParentId 点击行业时，行业父节点县市区ID必传 ，为了更好地拿数据，所以要做这个
+     * @returns {Array|*}
+     */
+    renderTreeNodes = (data, industryParentId = '') => {
         return data.map(item => {
-            if (item.children) {
+            if (item.nodes) {
                 return (
-                    <TreeNode {...item} dataRef={item} title={item.name} key={item.id}>
-                        {this.renderTreeNodes(item.children)}
+                    <TreeNode
+                        {...item}
+                        dataRef={item}
+                        name={item.text}
+                        title={item.text}
+                        key={item.code}
+                        id={item.code}
+                        backId={item.id}
+                        pId={item.parentCode}
+                        industryParentId={industryParentId}
+                    >
+                        {this.renderTreeNodes(item.nodes, item.id)}
                     </TreeNode>
                 );
             }
-            return <TreeNode {...item} dataRef={item} title={item.name} key={item.id} isLeaf/>;
+            return <TreeNode
+                {...item}
+                dataRef={item}
+                name={item.text}
+                title={item.text}
+                key={item.code}
+                id={item.code}
+                backId={item.id}
+                isLeaf
+                pId={item.parentCode}
+            />;
         });
     };
 
-    //渲染select树节点
-    renderSelectTreeNodes = data => {
-        return data.map(item => {
-            if (item.children) {
-                return (
-                    <TreeSelect.TreeNode {...item} dataRef={item} title={item.name} value={item.name} key={item.id}>
-                        {this.renderSelectTreeNodes(item.children)}
-                    </TreeSelect.TreeNode>
-                );
-            }
-            return <TreeSelect.TreeNode {...item} dataRef={item} title={item.name} value={item.name} key={item.id}
-                                        isLeaf/>;
+    /**
+     * 展开树操作
+     * @param {array} expandedKeys
+     */
+    onExpand = expandedKeys => {
+        this.setState({
+            autoExpandParent: false,
+        });
+        this.setState({
+            expandTreeKey: expandedKeys
         });
     };
 
@@ -831,6 +918,7 @@ class CheckRecordList extends PureComponent {
     render() {
         const {
             fetchTreeStatus,
+            fetchMemberInfoListStatus,
             fetchCheckRecordListStatus,
             savingStatus,
             testStatus,
@@ -851,6 +939,10 @@ class CheckRecordList extends PureComponent {
             startPageNum,
             endPageNum,
             maxPageSize,
+            treeNewData,
+            autoExpandParent,
+            selectTreeKey,
+            expandTreeKey
         } = this.state;
         // console.log(Number(startPageNum),'startPageNum');
 
@@ -1034,7 +1126,7 @@ class CheckRecordList extends PureComponent {
         return (
             <PageHeaderWrapper title="行业健康信息填报查询">
                 <Row gutter={24}>
-                    <Col xl={4} lg={4} md={4} sm={24} xs={24}>
+                    <Col xl={6} lg={6} md={6} sm={24} xs={24}>
                         <Card
                             title="资源列表"
                             bordered={false}
@@ -1048,15 +1140,18 @@ class CheckRecordList extends PureComponent {
                                     <DirectoryTree
                                         multiple
                                         defaultExpandAll={true}
-                                        onSelect={this.onSelect.bind(this)}
-                                        selectedKeys={[selectedKey]}
+                                        onSelect={this.onSelect}
+                                        onExpand={this.onExpand}
+                                        selectedKeys={selectTreeKey}
+                                        expandedKeys={expandTreeKey}
+                                        autoExpandParent={autoExpandParent}
                                     >
-                                        {this.renderTreeNodes(treeData)}
+                                        {this.renderTreeNodes(treeNewData)}
                                     </DirectoryTree>
                             }
                         </Card>
                     </Col>
-                    <Col xl={20} lg={20} md={20} sm={24} xs={24} className={styles.dataSourceTableList}>
+                    <Col xl={18} lg={18} md={18} sm={24} xs={24} className={styles.dataSourceTableList}>
                         <Form layout="inline" onSubmit={this.searchDataSource}>
                             <Row className={`${styles.dataSourceTitle} ${styles.tableListForms}`}
                                  style={{marginBottom: 10}}>
@@ -1169,7 +1264,7 @@ class CheckRecordList extends PureComponent {
                                     columns={loginInfo.data.user.role === 0 ? adminColumns : leaderColumns}
                                     dataSource={members}
                                     rowSelection={rowSelection}
-                                    loading={fetchCheckRecordListStatus}
+                                    loading={fetchMemberInfoListStatus}
                                     pagination={{
                                         current: currentPage,
                                         onChange: this.pageChange,
