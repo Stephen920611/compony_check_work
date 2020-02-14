@@ -333,7 +333,6 @@ class JobStatisticsList extends PureComponent {
         //点击选中事件，属性可以打印查看
         const eventData = event.node.props;
         let self = this;
-        console.log(keys,'keys');
         this.setState({
             selectTreeKey: keys,
             selectedArea: eventData.name,
