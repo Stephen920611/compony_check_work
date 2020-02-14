@@ -1144,7 +1144,7 @@ class CheckRecordList extends PureComponent {
                 isSpecialBreadcrumb={true}
             >
                 <Row gutter={24}>
-                    <Col xl={6} lg={6} md={6} sm={24} xs={24}>
+                    <Col xl={7} lg={7} md={7} sm={24} xs={24}>
                         <Card
                             title="资源列表"
                             bordered={false}
@@ -1169,7 +1169,7 @@ class CheckRecordList extends PureComponent {
                             }
                         </Card>
                     </Col>
-                    <Col xl={18} lg={18} md={18} sm={24} xs={24} className={styles.dataSourceTableList}>
+                    <Col xl={17} lg={17} md={17} sm={24} xs={24} className={styles.dataSourceTableList}>
                         <Form layout="inline" onSubmit={this.searchDataSource}>
                             <Row className={`${styles.dataSourceTitle} ${styles.tableListForms}`}
                                  style={{marginBottom: 10}}>
