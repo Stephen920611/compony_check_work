@@ -1,4 +1,3 @@
-// ResourceList
 import React, {PureComponent} from 'react';
 import {connect} from 'dva';
 import {formatMessage, FormattedMessage} from 'umi-plugin-react/locale';
@@ -41,7 +40,6 @@ const {Panel} = Collapse;
 import styles from './JobStatisticsList.less';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper'; // @ 表示相对于源文件根目录
 
-//数据分发页面
 /* eslint react/no-multi-comp:0 */
 @connect(({jobStatistics, loading}) => ({
     jobStatistics,
@@ -311,6 +309,9 @@ class JobStatisticsList extends PureComponent {
         //点击选中事件，属性可以打印查看
         const eventData = event.node.props;
         let self = this;
+        console.log('keys',keys);
+        console.log('eventData',eventData);
+
         this.setState({
             selectedKey: keys[0],
             selectedArea: eventData.name
@@ -393,8 +394,18 @@ class JobStatisticsList extends PureComponent {
                 width: '5%',
             },
             {
-                title: '地区',
+                title: '县市区',
                 dataIndex: 'area',
+                width: '8%',
+            },
+            {
+                title: '所属行业',
+                dataIndex: 'industry',
+                width: '8%',
+            },
+            {
+                title: '单位名称',
+                dataIndex: 'company',
                 width: '8%',
             },
             {
@@ -427,76 +438,6 @@ class JobStatisticsList extends PureComponent {
                 dataIndex: 'bodyAbnormalSum',
                 width: '8%',
             },
-            {
-                title: '当日集中隔离人数',
-                dataIndex: 'currentIsolateSum',
-                width: '8%',
-            },
-            {
-                title: '累计集中隔离人数（1月24日至今）',
-                dataIndex: 'isolateSum',
-                width: '12%',
-                render: (text, record) => {
-                    // if (record.isolatedTotalNumEdit && record.isolatedTotalNumFirst) {
-                    //     return (
-                    //         <Input
-                    //             value={text}
-                    //             autoFocus
-                    //             onChange={e => this.handleMapChange(e, 'isolatedTotalNum', record.key)}
-                    //             // onKeyPress={e => this.handleKeyPress(e, record.key)}
-                    //             onBlur={e => this.handleKeyPress(e, 'isolatedTotalNum',record.key)}
-                    //             placeholder="初始值录入"
-                    //         />
-                    //     );
-                    // }
-                    return (
-                        <Input
-                            value={text}
-                            autoFocus
-                            onChange={e => this.handleMapChange(e, 'isolateSum', record.key)}
-                            placeholder="请输入人数"
-                        />
-                    )
-                    // return (
-                    //     <a onClick={(e) => this.showEdit(e,'isolatedTotalNum',record.key)}>{text}</a>
-                    // );
-                },
-            },
-            {
-                title: '当日居家隔离人数',
-                dataIndex: 'currentIsolateHomeSum',
-                width: '8%',
-            },
-            {
-                title: '累计居家隔离人数（1月24日至今）',
-                dataIndex: 'isolateHomeSum',
-                width: '12%',
-                render: (text, record) => {
-                    // if (record.atHomeTotalNumEdit && record.atHomeTotalNumFirst) {
-                    //     return (
-                    //         <Input
-                    //             value={text}
-                    //             autoFocus
-                    //             onChange={e => this.handleMapChange(e, 'atHomeTotalNum', record.key)}
-                    //             // onKeyPress={e => this.handleKeyPress(e, record.key)}
-                    //             onBlur={e => this.handleKeyPress(e, 'atHomeTotalNum',record.key)}
-                    //             placeholder="初始值录入"
-                    //         />
-                    //     );
-                    // }
-                    // return (
-                    //     <a onClick={(e) => this.showEdit(e,'atHomeTotalNum',record.key)}>{text}</a>
-                    // );
-                    return (
-                        <Input
-                            value={text}
-                            autoFocus
-                            onChange={e => this.handleMapChange(e, 'isolateHomeSum', record.key)}
-                            placeholder="请输入人数"
-                        />
-                    )
-                },
-            },
 
         ];
         const rowSelection = {
@@ -521,7 +462,7 @@ class JobStatisticsList extends PureComponent {
 
         let apiHref = window.ENV.apiDomain + "/excel/staticNum?area=" + (T.auth.isAdmin() ? selectedArea === "烟台市" ? '' : selectedArea : loginInfo.data.area) + "&start=" + formStart + "&end=" + formEnd;
         return (
-            <PageHeaderWrapper title="摸排工作统计">
+            <PageHeaderWrapper title="行业健康信息填报统计">
                 <Row gutter={24}>
                     {
                         T.auth.isAdmin() ?
@@ -554,7 +495,7 @@ class JobStatisticsList extends PureComponent {
                         <Form layout="inline" onSubmit={this.searchDataSource}>
                             <Row className={`${styles.dataSourceTitle} ${styles.tableListForms}`}
                                  style={{marginBottom: 10}}>
-                                <Col xl={5} lg={5} md={5} sm={5} xs={24}>
+                                <Col xl={6} lg={6} md={6} sm={6} xs={24}>
                                     <Form.Item
                                         label='起始时间'
                                     >
@@ -571,7 +512,7 @@ class JobStatisticsList extends PureComponent {
                                         )}
                                     </Form.Item>
                                 </Col>
-                                <Col xl={5} lg={5} md={5} sm={5} xs={24}>
+                                <Col xl={6} lg={6} md={6} sm={6} xs={24}>
                                     <Form.Item
                                         label='结束时间'
                                     >

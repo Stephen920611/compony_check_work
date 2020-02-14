@@ -365,7 +365,24 @@ class CheckRecordList extends PureComponent {
 
     componentDidMount() {
         const {dispatch} = this.props;
+        const {user} = this.state;
         let self = this;
+        //获取树
+        new Promise((resolve, reject) => {
+            dispatch({
+                type: user === 0 ? 'checkRecord/fetchAdminTreeDataAction':'checkRecord/fetchUserTreeDataAction',
+                resolve,
+                reject,
+            });
+        }).then(response => {
+            if (response.result === 'true') {
+                this.setState({
+                    treeHeight: window.innerHeight - 141,
+                })
+            } else {
+                T.prompt.error(response.message);
+            }
+        });
 
         //获取被调查人基本情况
         new Promise((resolve, reject) => {
@@ -874,24 +891,29 @@ class CheckRecordList extends PureComponent {
                 key: 'area',
             },
             {
+                title: '所属行业',
+                dataIndex: 'industry',
+                key: 'industry',
+            },
+            {
+                title: '单位名称',
+                dataIndex: 'company',
+                key: 'company',
+            },
+            {
+                title: '所在部门',
+                dataIndex: 'department',
+                key: 'department',
+            },
+            {
                 title: '姓名',
                 dataIndex: 'name',
                 key: 'name',
             },
             {
-                title: '年龄',
-                dataIndex: 'age',
-                key: 'age',
-            },
-            {
                 title: '性别',
                 dataIndex: 'gender',
                 key: 'gender',
-            },
-            {
-                title: '填报日期',
-                dataIndex: 'createTime',
-                key: 'createTime',
             },
             {
                 title: '身份证号',
@@ -900,19 +922,19 @@ class CheckRecordList extends PureComponent {
             },
 
             {
-                title: '被调查人基本情况',
+                title: '身体状况',
                 dataIndex: 'baseInfo',
                 key: 'baseInfo',
             },
-            // {
-            //     title: '身体状况',
-            //     dataIndex: 'status',
-            //     key: 'status',
-            // },
             {
-                title: '摸排人',
+                title: '填报人',
                 dataIndex: 'fillUserName',
                 key: 'fillUserName',
+            },
+            {
+                title: '填报时间',
+                dataIndex: 'status',
+                key: 'status',
             },
             {
                 title: '操作',
@@ -938,7 +960,7 @@ class CheckRecordList extends PureComponent {
             }),
         };
         return (
-            <PageHeaderWrapper title="摸排记录查询">
+            <PageHeaderWrapper title="行业健康信息填报查询">
                 <Row gutter={24}>
                     {
                         T.auth.isAdmin() ?
@@ -973,23 +995,19 @@ class CheckRecordList extends PureComponent {
                                  style={{marginBottom: 10}}>
                                 <Col xl={6} lg={6} md={6} sm={6} xs={24}>
                                     <Form.Item
-                                        label={<FormattedMessage
-                                            id="checkRecord.resourceList.person.label"/>}
+                                        label='被填报人姓名'
                                     >
                                         {getFieldDecorator('person', {})(
                                             <Input
                                                 autoComplete="off"
-                                                placeholder={formatMessage({
-                                                    id: 'checkRecord.resourceList.person.placeholder',
-                                                })}
+                                                placeholder='请输入填报人姓名'
                                             />
                                         )}
                                     </Form.Item>
                                 </Col>
                                 <Col xl={6} lg={6} md={6} sm={6} xs={24} style={{textAlign: 'left'}}>
                                     <Form.Item
-                                        label={<FormattedMessage
-                                            id="checkRecord.resourceList.sex.label"/>}
+                                        label='性别'
                                     >
                                         {getFieldDecorator('sex', {
                                             initialValue: "all",
@@ -1004,8 +1022,7 @@ class CheckRecordList extends PureComponent {
                                 </Col>
                                 <Col xl={6} lg={6} md={6} sm={6} xs={24}>
                                     <Form.Item
-                                        label={<FormattedMessage
-                                            id="checkRecord.resourceList.startDate.label"/>}
+                                        label='开始时间'
                                     >
                                         {getFieldDecorator('startDate', {
                                             // rules: [{required: true, message: '请选择开始时间！'}],
@@ -1017,8 +1034,7 @@ class CheckRecordList extends PureComponent {
                                 </Col>
                                 <Col xl={6} lg={6} md={6} sm={6} xs={24}>
                                     <Form.Item
-                                        label={<FormattedMessage
-                                            id="checkRecord.resourceList.endDate.label"/>}
+                                        label='结束时间'
                                     >
                                         {getFieldDecorator('endDate', {
                                             // rules: [{required: true, message: '请选择结束时间！'}],
@@ -1034,8 +1050,7 @@ class CheckRecordList extends PureComponent {
 
                                 <Col xl={6} lg={6} md={6} sm={6} xs={24}>
                                     <Form.Item
-                                        label={<FormattedMessage
-                                            id="checkRecord.resourceList.base.label"/>}
+                                        label='身体状况'
                                     >
                                         {getFieldDecorator('base',{
                                             initialValue: "全部"
@@ -1052,33 +1067,12 @@ class CheckRecordList extends PureComponent {
                                 </Col>
                                 <Col xl={6} lg={6} md={6} sm={6} xs={24}>
                                     <Form.Item
-                                        label={<FormattedMessage
-                                            id="checkRecord.resourceList.status.label"/>}
-                                    >
-                                        {getFieldDecorator('status',{
-                                            initialValue: "全部"
-                                        })(
-                                            <Select
-                                                getPopupContainer={triggerNode => triggerNode.parentNode}
-                                            >
-                                                {
-                                                    this.renderSelect(bodyConditionSelect)
-                                                }
-                                            </Select>
-                                        )}
-                                    </Form.Item>
-                                </Col>
-                                <Col xl={6} lg={6} md={6} sm={6} xs={24}>
-                                    <Form.Item
-                                        label={<FormattedMessage
-                                            id="checkRecord.resourceList.head.label"/>}
+                                        label='填报人'
                                     >
                                         {getFieldDecorator('head', {})(
                                             <Input
                                                 autoComplete="off"
-                                                placeholder={formatMessage({
-                                                    id: 'checkRecord.resourceList.head.placeholder',
-                                                })}
+                                                placeholder='请输入填报人'
                                             />
                                         )}
                                     </Form.Item>
@@ -1091,9 +1085,9 @@ class CheckRecordList extends PureComponent {
                                         <Button onClick={this.resetDataSource} type="primary" style={{marginRight: 10}}>
                                             <FormattedMessage id="checkRecord.btn.reset"/>
                                         </Button>
-                                        <Button onClick={this.exportData} type="primary">
+                                        {/* <Button onClick={this.exportData} type="primary">
                                             <FormattedMessage id="checkRecord.btn.output"/>
-                                        </Button>
+                                        </Button>*/}
                                     </Form.Item>
                                 </Col>
                             </Row>
