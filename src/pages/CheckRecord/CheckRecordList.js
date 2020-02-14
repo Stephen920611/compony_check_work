@@ -368,6 +368,7 @@ class CheckRecordList extends PureComponent {
         treeNewData: [],    //后台返回树节点
         treeBackData: [],   //用来备份的节点，如果有部门的话，就要拼接
         autoExpandParent: true,     //是否自动展开
+        clickTree: [],  //
     };
 
     componentDidMount() {
@@ -565,8 +566,9 @@ class CheckRecordList extends PureComponent {
 
     //重置表单
     resetDataSource = () => {
+        const {clickTree} = this.state;
         this.props.form.resetFields();
-        this.fetchDataList();
+        this.fetchDataList(clickTree);
     };
 
     //树选择
@@ -581,7 +583,8 @@ class CheckRecordList extends PureComponent {
         }
         this.setState({
             selectTreeKey: keys,
-            selectedArea: eventData.name
+            selectedArea: eventData.name,
+            clickTree: eventData,
         }, () => {
             self.fetchDataList(eventData)
         });
@@ -642,12 +645,13 @@ class CheckRecordList extends PureComponent {
 
     //查询
     searchDataSource = (e) => {
+        const {clickTree} = this.state;
         const {dispatch, form} = this.props;
         e.preventDefault();
         this.setState({
             currentPage: EnumDataSyncPageInfo.defaultPage,
         }, () => {
-            this.fetchDataList();
+            this.fetchDataList(clickTree);
         });
         // this.fetchDataList();
     };
