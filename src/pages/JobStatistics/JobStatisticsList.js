@@ -56,6 +56,7 @@ class JobStatisticsList extends PureComponent {
         selectTreeKey: [],  //树选择的key值
         expandTreeKey: [],  //树展开的key值
         selectedArea: '烟台市',//树节点默认选中的地区名字，用来后台获取参数
+        clickTree: [],  //点击的当前树
         tableData: [],  //表格数据
         treeData: [
             {
@@ -317,12 +318,13 @@ class JobStatisticsList extends PureComponent {
 
     //重置表单
     resetDataSource = () => {
+        const {clickTree} = this.state;
         this.props.form.setFieldsValue({
             startDate: T.moment(new Date().getTime()),
             endDate: T.moment(new Date().getTime()),
         });
         // this.props.form.resetFields();
-        this.fetchDataList();
+        this.fetchDataList(clickTree);
     };
 
     //树选择
@@ -333,7 +335,8 @@ class JobStatisticsList extends PureComponent {
 
         this.setState({
             selectTreeKey: keys,
-            selectedArea: eventData.name
+            selectedArea: eventData.name,
+            clickTree: eventData,
         }, () => {
             self.fetchDataList(eventData)
         });
@@ -396,9 +399,10 @@ class JobStatisticsList extends PureComponent {
 
     //查询
     searchDataSource = (e) => {
+        const {clickTree} = this.state;
         const {dispatch, form} = this.props;
         e.preventDefault();
-        this.fetchDataList();
+        this.fetchDataList(clickTree);
     };
 
     //导出
@@ -529,7 +533,7 @@ class JobStatisticsList extends PureComponent {
         let formEnd = T.lodash.isUndefined(formTimeValue.endDate) ? '' : formTimeValue.endDate === null ?  '' : T.helper.dateFormat(formTimeValue.endDate,'YYYY-MM-DD');
 
         // let apiHref = window.ENV.apiDomain + "/stat/export-stat-info?area=" + (T.auth.isAdmin() ? selectedArea === "烟台市" ? '' : selectedArea : loginInfo.data.area) + "&start=" + formStart + "&end=" + formEnd;
-        let apiHref = window.ENV.apiDomain + "/stat/export-stat-info?area=" + "userId=" + loginInfo.data.user.id+"&areaId=" + sendParams.areaId + "&industryId=" + sendParams.industryId + "&companyId=" + sendParams.companyId  + "&startDay=" + formStart + "&endDay=" + formEnd;
+        let apiHref = window.ENV.apiDomain + "/stat/export-stat-info?userId=" + loginInfo.data.user.id+"&areaId=" + sendParams.areaId + "&industryId=" + sendParams.industryId + "&companyId=" + sendParams.companyId  + "&startDay=" + formStart + "&endDay=" + formEnd;
         return (
             <PageHeaderWrapper
                 title="行业健康信息填报统计"
