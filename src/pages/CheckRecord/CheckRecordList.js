@@ -387,7 +387,7 @@ class CheckRecordList extends PureComponent {
         });
 
         //获取被调查人基本情况
-        new Promise((resolve, reject) => {
+       /* new Promise((resolve, reject) => {
             dispatch({
                 type: 'checkRecord/fetchSelectInfoAction',
                 params: {
@@ -408,9 +408,9 @@ class CheckRecordList extends PureComponent {
             } else {
                 T.prompt.error(response.msg);
             }
-        });
+        });*/
 
-        //获取身体情况列表
+       /* //获取身体情况列表
         new Promise((resolve, reject) => {
             dispatch({
                 type: 'checkRecord/fetchSelectInfoAction',
@@ -432,7 +432,7 @@ class CheckRecordList extends PureComponent {
             } else {
                 T.prompt.error(response.msg);
             }
-        });
+        });*/
         this.fetchDataList();
     }
 
@@ -454,30 +454,36 @@ class CheckRecordList extends PureComponent {
                 let loginInfo = T.auth.getLoginInfo();
 
                 let params = {
+                    userId:1,
                     current: currentPage,
                     size: EnumDataSyncPageInfo.defaultPageSize,
                     startTime: T.lodash.isUndefined(values.startDate) ? '' : T.helper.dateFormat(values.startDate,'YYYY-MM-DD'),      //开始时间
                     endTime: T.lodash.isUndefined(values.endDate) ? '' : T.helper.dateFormat(values.endDate,'YYYY-MM-DD'),        //结束时间
-                    area: T.auth.isAdmin() ? selectedArea === "烟台市" ? '' : selectedArea : loginInfo.data.area,           //县市区(烟台市传空)
-                    name: T.lodash.isUndefined(values.person) ? '' : values.person,           //被调查人姓名
+                    areaId:0,//县市区Id
+                    industryId:'',//行业Id 查询行业时 上级县市区ID必传
+                    companyId:'',//公司id
+                    departId:'',//部门id
+                    // area: T.auth.isAdmin() ? selectedArea === "烟台市" ? '' : selectedArea : loginInfo.data.area,           //县市区(烟台市传空)
+                    memberName: T.lodash.isUndefined(values.person) ? '' : values.person,           //被调查人姓名
                     gender: T.lodash.isUndefined(values.sex) ? '' : values.sex === 'all' ? '' : values.sex,         //性别
                     // idCard: "",         //身份证号
-                    baseInfo: T.lodash.isUndefined(values.base) ? '' : values.base === '全部' ? '' : values.base,         //被调查人基本情况
-                    bodyCondition: T.lodash.isUndefined(values.status) ? '' : values.status === '全部' ? '' : values.status,         //身体状况
-                    fillUserName: T.lodash.isUndefined(values.head) ? '' : values.head,   //摸排人
+                    bodyCondition: T.lodash.isUndefined(values.base) ? '' : values.base === '全部' ? '' : values.base,         //被调查人基本情况
+                    // bodyCondition: T.lodash.isUndefined(values.status) ? '' : values.status === '全部' ? '' : values.status,         //身体状况
+                    fillUser: T.lodash.isUndefined(values.head) ? '' : values.head,   //摸排人
                     fillUserId: loginInfo.data.static_auth === 0 ? loginInfo.data.id : ''   //摸排人id
                 };
                 new Promise((resolve, reject) => {
                     dispatch({
-                        type: 'checkRecord/fetchCheckRecordListAction',
+                        type: 'checkRecord/fetchMemberInfoListAction',
                         params,
                         resolve,
                         reject,
                     });
                 }).then(response => {
                     if (response.code === 0) {
-                        const { total, members } = response.data;
-                        let endData = members.map( (val,idx) => {
+                        // console.log('1111',response.data);
+                        const { total, list } = response.data;
+                        let endData = list.map( (val,idx) => {
                             return {
                                 ...val,
                                 key: (currentPage-1) * 10 + idx + 1,
@@ -890,33 +896,33 @@ class CheckRecordList extends PureComponent {
             },
             {
                 title: '县市区',
-                dataIndex: 'area',
-                key: 'area',
+                dataIndex: 'areaName',
+                key: 'areaName',
             },
             {
                 title: '所属行业',
-                dataIndex: 'industry',
-                key: 'industry',
+                dataIndex: 'industryName',
+                key: 'industryName',
             },
             {
                 title: '单位名称',
-                dataIndex: 'company',
-                key: 'company',
+                dataIndex: 'companyName',
+                key: 'companyName',
             },
             {
                 title: '所在部门',
-                dataIndex: 'department',
-                key: 'department',
+                dataIndex: 'departName',
+                key: 'departName',
             },
             {
                 title: '姓名',
-                dataIndex: 'name',
-                key: 'name',
+                dataIndex: 'memberName',
+                key: 'memberName',
             },
             {
                 title: '性别',
-                dataIndex: 'gender',
-                key: 'gender',
+                dataIndex: 'genderName',
+                key: 'genderName',
             },
             {
                 title: '身份证号',
@@ -926,18 +932,18 @@ class CheckRecordList extends PureComponent {
 
             {
                 title: '身体状况',
-                dataIndex: 'baseInfo',
-                key: 'baseInfo',
+                dataIndex: 'bodyConditionName',
+                key: 'bodyConditionName',
             },
             {
                 title: '填报人',
-                dataIndex: 'fillUserName',
-                key: 'fillUserName',
+                dataIndex: 'fillUser',
+                key: 'fillUser',
             },
             {
                 title: '填报时间',
-                dataIndex: 'status',
-                key: 'status',
+                dataIndex: 'createTime',
+                key: 'createTime',
             },
             {
                 title: '操作',
@@ -1074,9 +1080,9 @@ class CheckRecordList extends PureComponent {
                                             initialValue: "all",
                                         })(
                                             <Radio.Group onChange={this.onChange}>
-                                                <Radio value={"男"}>男</Radio>
-                                                <Radio value={"女"}>女</Radio>
-                                                <Radio value={"all"}>全部</Radio>
+                                                <Radio value={1}>男</Radio>
+                                                <Radio value={2}>女</Radio>
+                                                <Radio value={0}>全部</Radio>
                                             </Radio.Group>
                                         )}
                                     </Form.Item>
