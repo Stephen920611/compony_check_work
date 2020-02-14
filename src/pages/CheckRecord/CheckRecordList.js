@@ -370,12 +370,14 @@ class CheckRecordList extends PureComponent {
         //获取树
         new Promise((resolve, reject) => {
             dispatch({
-                type: user === 0 ? 'checkRecord/fetchAdminTreeDataAction':'checkRecord/fetchUserTreeDataAction',
+                type: 'checkRecord/fetchTreeNodeAction',
+                userId:0,
                 resolve,
                 reject,
             });
         }).then(response => {
             if (response.result === 'true') {
+                console.log('1111',response.data);
                 this.setState({
                     treeHeight: window.innerHeight - 141,
                 })

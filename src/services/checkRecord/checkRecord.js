@@ -7,6 +7,11 @@
 import EnumAPI from './../../constants/EnumAPI';
 import {postJSON, post, get} from './../../utils/core/requestTj';
 import T from './../../utils/T';
+//fetchTreeData
+//获取树节点
+export async function fetchTreeNode(userId) {
+    return post(EnumAPI.fetchTreeNode,userId);
+}
 
 //查看详情页面
 export async function fetchMemberInfo(id) {

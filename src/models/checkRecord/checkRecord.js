@@ -8,7 +8,8 @@
 import {
     fetchMemberInfo,
     fetchCheckRecordList,
-    fetchSelectInfo
+    fetchSelectInfo,
+    fetchTreeNode,
 } from '@/services/checkRecord/checkRecord';
 import T from '../../utils/T';
 
@@ -34,6 +35,15 @@ export default {
     },
 
     effects: {
+        //获取摸排记录列表页面
+        * fetchTreeNodeAction({userId, resolve, reject}, {call, put}) {
+            try {
+                const response = yield call(fetchTreeNode, userId);
+                resolve(response);
+            } catch (error) {
+                reject(error);
+            }
+        },
         //获取摸排记录列表页面
         * fetchCheckRecordListAction({params, resolve, reject}, {call, put}) {
             try {

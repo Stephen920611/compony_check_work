@@ -25,6 +25,8 @@ class CheckRecordDetail extends PureComponent {
             currentInfo: {},
             member: {},
             touch: [],
+            userId:3
+        //    1复工企业  2 商超  3快递外卖 4酒店
         }
     }
 
@@ -64,11 +66,12 @@ class CheckRecordDetail extends PureComponent {
             currentInfo,
             member,
             touch,
+            userId
         } = this.state;
         const breadcrumbDetail = [
             {
                 linkTo: '/checkRecord',
-                name: '行业健康信息填报查询（管理员）',
+                name: '行业健康信息填报查询',
             },
             {
                 name: '行业健康信息详情查看',
@@ -82,41 +85,55 @@ class CheckRecordDetail extends PureComponent {
             >
                 <div>
                     <div className={styles.detailItem}>
-                        <div className={styles.detailTitleName}>
-                            人员基本信息
-                        </div>
-                        <Card
-                            style={{marginBottom: 20}}
-                            loading={fetchStatus}
-                        >
-                            <Row className={styles.detailTitle}>
-                                <Col span={6}>
-                                    <span>县市区：</span>
-                                    <span>
+                        { userId === 1 ? ''
+                            :<div>
+                            <div className={styles.detailTitleName}>
+                                所属行业
+                            </div>
+                            <Card
+                                style={{marginBottom: 20}}
+                                loading={fetchStatus}
+                            >
+                                <Row className={styles.detailTitle}>
+                                    <Col span={6}>
+                                        <span>县市区：</span>
+                                        <span>
                                         {
                                             member.hasOwnProperty('area') ? member.area : '---'
                                         }
                                     </span>
-                                </Col>
-                                <Col span={6} className={styles.detailBtns}>
-                                    <span>所属行业：</span>
-                                    <span>
+                                    </Col>
+                                    <Col span={6} className={styles.detailBtns}>
+                                        <span>所属行业：</span>
+                                        <span>
                                         {
                                             member.hasOwnProperty('name') ? member.name : '---'
                                         }
                                     </span>
-                                </Col>
-                            </Row>
-                        </Card>
+                                    </Col>
+                                    {userId===3?<Col span={6} className={styles.detailBtns}>
+                                        <span>身份：</span>
+                                        <span>
+                                        {
+                                            member.hasOwnProperty('person') ? member.person : '---'
+                                        }
+                                    </span>
+                                    </Col>:''}
+                                </Row>
+                            </Card>
+                        </div>}
+
+
                         <div className={styles.detailTitleName}>
                             基本信息
                         </div>
-                        <Card style={{marginBottom:20}}
-                              loading={fetchStatus}
+                        {userId===4?
+                            <Card style={{marginBottom:20}}
+                                          loading={fetchStatus}
                         >
                             <Row className={styles.detailTitle}>
                                 <Col span={6}>
-                                    <span>企业名称：</span>
+                                    <span>酒店名称：</span>
                                     <span>
                                         {
                                             member.hasOwnProperty('nativePlace') ? member.nativePlace : '---'
@@ -124,13 +141,13 @@ class CheckRecordDetail extends PureComponent {
                                     </span>
                                 </Col>
                                 <Col span={6} className={styles.detailBtns}>
-                                    <span>地址：</span>
+                                    <span>酒店地址：</span>
                                     <span>
                                         {member.hasOwnProperty('address') ? member.address : '---'}
                                     </span>
                                 </Col>
                                 <Col span={6}>
-                                    <span>员工所在部门：</span>
+                                    <span>入住房间：</span>
                                     <span>
                                         {member.hasOwnProperty('idCard') ? member.idCard : '---'}
                                     </span>
@@ -183,7 +200,7 @@ class CheckRecordDetail extends PureComponent {
                                     </span>
                                 </Col>
                                 <Col span={6}>
-                                    <span>通勤方式</span>
+                                    <span>交通工具</span>
                                     <span>
                                         {member.hasOwnProperty('baseInfo') ? member.baseInfo : '---'}
                                     </span>
@@ -199,6 +216,102 @@ class CheckRecordDetail extends PureComponent {
                             </Row>
 
                         </Card>
+                        :<Card style={{marginBottom:20}}
+                               loading={fetchStatus}
+                            >
+                                <Row className={styles.detailTitle}>
+                                    <Col span={6}>
+                                        <span>企业名称：</span>
+                                        <span>
+                                        {
+                                            member.hasOwnProperty('nativePlace') ? member.nativePlace : '---'
+                                        }
+                                    </span>
+                                    </Col>
+                                    <Col span={6} className={styles.detailBtns}>
+                                        <span>地址：</span>
+                                        <span>
+                                        {member.hasOwnProperty('address') ? member.address : '---'}
+                                    </span>
+                                    </Col>
+                                    <Col span={6}>
+                                        <span>员工所在部门：</span>
+                                        <span>
+                                        {member.hasOwnProperty('idCard') ? member.idCard : '---'}
+                                    </span>
+                                    </Col>
+
+                                </Row>
+                                <Row className={styles.detailTitle}>
+                                    <Col span={6}>
+                                        <span>姓名：</span>
+                                        <span>
+                                        {member.hasOwnProperty('name') ? member.name : '---'}
+                                    </span>
+                                    </Col>
+                                    <Col span={6}>
+                                        <span>年龄：</span>
+                                        <span>
+                                        {member.hasOwnProperty('age') ? member.age : '---'}
+                                    </span>
+                                    </Col>
+                                    <Col span={6}>
+                                        <span>性别：</span>
+                                        <span>
+                                        {member.hasOwnProperty('sex') ? member.sex : '---'}
+                                    </span>
+                                    </Col>
+                                    <Col span={6}>
+                                        <span>籍贯</span>
+                                        <span>
+                                        {member.hasOwnProperty('baseInfo') ? member.baseInfo : '---'}
+                                    </span>
+                                    </Col>
+                                </Row>
+                                <Row className={styles.detailTitle}>
+                                    <Col span={6}>
+                                        <span>现住址：</span>
+                                        <span>
+                                        {member.hasOwnProperty('name') ? member.name : '---'}
+                                    </span>
+                                    </Col>
+                                    <Col span={6}>
+                                        <span>身份证号码：</span>
+                                        <span>
+                                        {member.hasOwnProperty('age') ? member.age : '---'}
+                                    </span>
+                                    </Col>
+                                    <Col span={6}>
+                                        <span>联系电话：</span>
+                                        <span>
+                                        {member.hasOwnProperty('sex') ? member.sex : '---'}
+                                    </span>
+                                    </Col>
+                                    <Col span={6}>
+                                        <span>通勤方式</span>
+                                        <span>
+                                        {member.hasOwnProperty('baseInfo') ? member.baseInfo : '---'}
+                                    </span>
+                                    </Col>
+                                </Row>
+                                <Row className={styles.detailTitle}>
+                                    {userId===3 ? <Col span={6}>
+                                        <span>工作覆盖区域</span>
+                                        <span>
+                                        {member.hasOwnProperty('baseArea') ? member.baseArea : '---'}
+                                    </span>
+                                    </Col>:''}
+                                    <Col span={6}>
+                                        <span>1月25日之后是否离开过烟台：</span>
+                                        <span>
+                                        {member.hasOwnProperty('name') ? member.name : '---'}
+                                    </span>
+                                    </Col>
+                                </Row>
+
+                            </Card>
+                        }
+
 
                         <div className={styles.detailTitleName}>
                             防控信息
