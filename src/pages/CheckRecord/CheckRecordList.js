@@ -1139,7 +1139,10 @@ class CheckRecordList extends PureComponent {
             }),
         };
         return (
-            <PageHeaderWrapper title="行业健康信息填报查询">
+            <PageHeaderWrapper
+                title="行业健康信息填报查询"
+                isSpecialBreadcrumb={true}
+            >
                 <Row gutter={24}>
                     <Col xl={6} lg={6} md={6} sm={24} xs={24}>
                         <Card
