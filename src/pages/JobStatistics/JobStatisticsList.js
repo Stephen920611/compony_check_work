@@ -43,7 +43,7 @@ import PageHeaderWrapper from '@/components/PageHeaderWrapper'; // @ 表示相�
 /* eslint react/no-multi-comp:0 */
 @connect(({jobStatistics, loading}) => ({
     jobStatistics,
-    fetchJobStatisticsListStatus: loading.effects['jobStatistics/fetchJobStatisticsListAction'],
+    fetchStatInfoStatus: loading.effects['jobStatistics/fetchStatInfoAction'],
     fetchTreeStatus: loading.effects['jobStatistics/fetchTreeNodeAction'],
 }))
 // class JobStatisticsList
@@ -182,25 +182,7 @@ class JobStatisticsList extends PureComponent {
         ],
         treeNewData: [],
         autoExpandParent: true,     //是否自动展开
-        dataSource: [
-            {
-                key: 1,
-                totalNum: 10,
-                returnNum: 20,
-                closeContactsNum: 30,
-                partyNum: 40,
-                keyEpidemicAreasNum: 50,
-                abnormalPhysicalConditionsNum: 60,
-                quarantinedOnThatDayNum: 70,
-                isolatedTotalNum: 80,
-                quarantinedAtHomeOnThatDayNum: 90,
-                atHomeTotalNum: 100,
-                isolatedTotalNumEdit:false,
-                isolatedTotalNumFirst:true,
-                atHomeTotalNumEdit:false,
-                atHomeTotalNumFirst:true,
-            }
-        ],
+        sendParams:{}
     };
 
     componentDidMount() {
@@ -222,11 +204,12 @@ class JobStatisticsList extends PureComponent {
                 reject,
             });
         }).then(response => {
-            console.log(response,'树节点');
+            // console.log(response.data,'树节点');
             if (response.code === 0) {
                 self.setState({
                     treeNewData: response.data
-                })
+                });
+                self.fetchDataList(response.data);
             } else {
                 T.prompt.error(response.msg);
             }
@@ -235,7 +218,6 @@ class JobStatisticsList extends PureComponent {
 
     //获取当前页数数据
     fetchDataList = (eventData) => {
-        console.log(eventData,'eventData');
         const {dispatch, form} = this.props;
         const {currentPage, selectedArea} = this.state;
         let self = this;
@@ -250,34 +232,36 @@ class JobStatisticsList extends PureComponent {
                     areaId: eventData.type === 'area' ? eventData.backId : eventData.type === 'industry' ? eventData.industryParentId: '' ,
                     industryId: eventData.type === 'industry' ? eventData.backId : '',
                     companyId: eventData.type === 'company' ? eventData.backId : '',
-                    start: T.lodash.isUndefined(values.startDate) ? '' : values.startDate === null ?  '' : T.helper.dateFormat(values.startDate,'YYYY-MM-DD'),      //开始时间
-                    end: T.lodash.isUndefined(values.endDate) ? '' : values.endDate === null ?  '' : T.helper.dateFormat(values.endDate,'YYYY-MM-DD'),      //开始时间
+                    startDay: T.lodash.isUndefined(values.startDate) ? '' : values.startDate === null ?  '' : T.helper.dateFormat(values.startDate,'YYYY-MM-DD'),      //开始时间
+                    endDay: T.lodash.isUndefined(values.endDate) ? '' : values.endDate === null ?  '' : T.helper.dateFormat(values.endDate,'YYYY-MM-DD'),      //开始时间
                 };
-                console.log(params,'params');
-                // new Promise((resolve, reject) => {
-                //     dispatch({
-                //         type: 'jobStatistics/fetchStatInfoAction',
-                //         params,
-                //         resolve,
-                //         reject,
-                //     });
-                // }).then(response => {
-                //     console.log(response,'response');
-                //     if (response.code === 0) {
-                //         // let endData = response.data.map( (val,idx) => {
-                //         //     return {
-                //         //         ...val,
-                //         //         key: idx + 1,
-                //         //         index: idx + 1,
-                //         //     }
-                //         // });
-                //         // self.setState({
-                //         //     tableData: endData,
-                //         // })
-                //     } else {
-                //         T.prompt.error(response.msg);
-                //     }
-                // });
+                // console.log(params,'params');
+                this.setState({
+                    sendParams:params
+                });
+                new Promise((resolve, reject) => {
+                    dispatch({
+                        type: 'jobStatistics/fetchStatInfoAction',
+                        params,
+                        resolve,
+                        reject,
+                    });
+                }).then(response => {
+                    if (response.code === 0) {
+                        let endData = response.data.map( (val,idx) => {
+                            return {
+                                ...val,
+                                key: idx + 1,
+                                index: idx + 1,
+                            }
+                        });
+                        self.setState({
+                            tableData: endData,
+                        })
+                    } else {
+                        T.prompt.error(response.msg);
+                    }
+                });
             }
         });
     };
@@ -334,8 +318,8 @@ class JobStatisticsList extends PureComponent {
     //重置表单
     resetDataSource = () => {
         this.props.form.setFieldsValue({
-            startDate: null,
-            endDate: null,
+            startDate: T.moment(new Date().getTime()),
+            endDate: T.moment(new Date().getTime()),
         });
         // this.props.form.resetFields();
         this.fetchDataList();
@@ -455,7 +439,7 @@ class JobStatisticsList extends PureComponent {
     render() {
         const {
             fetchTreeStatus,
-            fetchJobStatisticsListStatus,
+            fetchStatInfoStatus,
             form: {getFieldDecorator, getFieldValue, getFieldsValue},
         } = this.props;
         const {
@@ -467,7 +451,8 @@ class JobStatisticsList extends PureComponent {
             selectedArea,
             autoExpandParent,
             selectTreeKey,
-            expandTreeKey
+            expandTreeKey,
+            sendParams,
         } = this.state;
 
         const columns = [
@@ -479,47 +464,47 @@ class JobStatisticsList extends PureComponent {
             },
             {
                 title: '县市区',
-                dataIndex: 'area',
+                dataIndex: 'areaName',
                 width: '8%',
             },
             {
                 title: '所属行业',
-                dataIndex: 'industry',
+                dataIndex: 'industryName',
                 width: '8%',
             },
             {
                 title: '单位名称',
-                dataIndex: 'company',
+                dataIndex: 'companyName',
                 width: '8%',
             },
             {
                 title: '摸排总人数',
-                dataIndex: 'sum',
+                dataIndex: 'memberNum',
                 width: '8%',
             },
             {
                 title: '来烟（返烟）人数',
-                dataIndex: 'backSum',
+                dataIndex: 'backNum',
                 width: '8%',
             },
             {
                 title: '与确诊、疑似病例有过密切接触的人数',
-                dataIndex: 'touchSuspectSum',
+                dataIndex: 'touchSuspectNum',
                 width: '12%',
             },
             {
                 title: '与密切接触者有过共同生活、工作、学习、聚会的人数',
-                dataIndex: 'touchIntimateSum',
+                dataIndex: 'touchIntimateNum',
                 width: '12%',
             },
             {
                 title: '与重点疫区人员有过接触的人数',
-                dataIndex: 'touchInfectorSum',
+                dataIndex: 'touchInfectorNum',
                 width: '12%',
             },
             {
                 title: '身体状况异常的人数',
-                dataIndex: 'bodyAbnormalSum',
+                dataIndex: 'bodyAbnormalNum',
                 width: '8%',
             },
 
@@ -543,9 +528,13 @@ class JobStatisticsList extends PureComponent {
         let formStart = T.lodash.isUndefined(formTimeValue.startDate) ? '' : formTimeValue.startDate === null ?  '' : T.helper.dateFormat(formTimeValue.startDate,'YYYY-MM-DD');
         let formEnd = T.lodash.isUndefined(formTimeValue.endDate) ? '' : formTimeValue.endDate === null ?  '' : T.helper.dateFormat(formTimeValue.endDate,'YYYY-MM-DD');
 
-        let apiHref = window.ENV.apiDomain + "/excel/staticNum?area=" + (T.auth.isAdmin() ? selectedArea === "烟台市" ? '' : selectedArea : loginInfo.data.area) + "&start=" + formStart + "&end=" + formEnd;
+        // let apiHref = window.ENV.apiDomain + "/stat/export-stat-info?area=" + (T.auth.isAdmin() ? selectedArea === "烟台市" ? '' : selectedArea : loginInfo.data.area) + "&start=" + formStart + "&end=" + formEnd;
+        let apiHref = window.ENV.apiDomain + "/stat/export-stat-info?area=" + "userId=" + loginInfo.data.user.id+"&areaId=" + sendParams.areaId + "&industryId=" + sendParams.industryId + "&companyId=" + sendParams.companyId  + "&startDay=" + formStart + "&endDay=" + formEnd;
         return (
-            <PageHeaderWrapper title="行业健康信息填报统计">
+            <PageHeaderWrapper
+                title="行业健康信息填报统计"
+                isSpecialBreadcrumb={true}
+            >
                 <Row gutter={24}>
                     <Col xl={6} lg={6} md={6} sm={24} xs={24}>
                         <Card
@@ -634,7 +623,7 @@ class JobStatisticsList extends PureComponent {
                         <Row>
                             <Card bordered={false}>
                                 <Table
-                                    loading={fetchJobStatisticsListStatus}
+                                    loading={fetchStatInfoStatus}
                                     columns={columns}
                                     dataSource={tableData}
                                     rowSelection={rowSelection}

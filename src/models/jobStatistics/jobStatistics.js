@@ -7,7 +7,7 @@
 
 import {
     fetchTreeNode,
-    fetchJobStatisticsList,
+    // fetchJobStatisticsList,
     fetchStatInfo,
 } from '@/services/jobStatistics/jobStatistics';
 import T from '../../utils/T';
