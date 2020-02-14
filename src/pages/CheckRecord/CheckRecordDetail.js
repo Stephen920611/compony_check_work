@@ -15,7 +15,7 @@ import {
 /* eslint react/no-multi-comp:0 */
 @connect(({checkRecord, loading}) => ({
     checkRecord,
-    fetchStatus: loading.effects['checkRecord/fetchMemberInfoAction'],
+    fetchStatus: loading.effects['checkRecord/fetchMemberInfoByIdAction'],
 }))
 class CheckRecordDetail extends PureComponent {
     constructor() {
