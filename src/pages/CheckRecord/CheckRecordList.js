@@ -441,7 +441,7 @@ class CheckRecordList extends PureComponent {
                 reject,
             });
         }).then(response => {
-            console.log(response,'树节点');
+            // console.log(response,'树节点');
             if (response.code === 0) {
                 self.setState({
                     treeNewData: response.data,
@@ -457,7 +457,7 @@ class CheckRecordList extends PureComponent {
     fetchDepartId = (eventData) => {
         const {dispatch, form, checkRecord} = this.props;
         const {treeBackData, treeNewData} = this.state;
-        console.log(eventData,'eventData');
+        // console.log(eventData,'eventData');
         let self = this;
         new Promise((resolve, reject) => {
             dispatch({
@@ -467,12 +467,11 @@ class CheckRecordList extends PureComponent {
                 reject,
             });
         }).then(response => {
-            console.log(response,'部门节点');
+            // console.log(response,'部门节点');
             if (response.code === 0) {
                 if(response.data.length > 0){
                     let searchParentCode = response.data[0].hasOwnProperty('parentCode') ? response.data[0].parentCode : '-';
-                    let a = self.setDepart(treeNewData, searchParentCode, response.data);
-                    console.log(a,'aaaaaa');
+                    self.setDepart(treeNewData, searchParentCode, response.data);
                 }
                 // self.setState({
                 //     treeNewData: response.data
@@ -490,7 +489,6 @@ class CheckRecordList extends PureComponent {
                 departNodes.map(val => {
                     item.nodes.push(val)
                 });
-                console.log(data,'data');
             }else {
                 this.setDepart(item.nodes, searchParentCode, departNodes)
             }
@@ -499,7 +497,7 @@ class CheckRecordList extends PureComponent {
 
     //获取当前页数数据
     fetchDataList = (eventData) => {
-        console.log(eventData,'eventData');
+        // console.log(eventData,'eventData');
         const {dispatch, form, checkRecord} = this.props;
         const {currentPage, selectedKey, treeData, selectedArea} = this.state;
         let self = this;
@@ -523,7 +521,7 @@ class CheckRecordList extends PureComponent {
                     areaId: eventData.type === 'area' ? eventData.backId : eventData.type === 'industry' ? eventData.industryParentId: '' , //县市区Id
                     industryId: eventData.type === 'industry' ? eventData.backId : '', //行业Id 查询行业时 上级县市区ID必传
                     companyId: eventData.type === 'company' ? eventData.backId : '', //公司id
-                    departId:'',//部门id
+                    departId: eventData.type === 'depart' ? eventData.backId : '',//部门id
                     // area: T.auth.isAdmin() ? selectedArea === "烟台市" ? '' : selectedArea : loginInfo.data.area,           //县市区(烟台市传空)
                     memberName: T.lodash.isUndefined(values.person) ? '' : values.person,           //被调查人姓名
                     gender: T.lodash.isUndefined(values.sex) ? '' : values.sex === 'all' ? '' : values.sex,         //性别
@@ -576,7 +574,7 @@ class CheckRecordList extends PureComponent {
         //点击选中事件，属性可以打印查看
         const eventData = event.node.props;
         let self = this;
-        console.log(eventData,'eventData');
+        // console.log(eventData,'eventData');
 
         if(eventData.type === 'company'){
             this.fetchDepartId(eventData)
@@ -946,7 +944,7 @@ class CheckRecordList extends PureComponent {
             expandTreeKey
         } = this.state;
         // console.log(Number(startPageNum),'startPageNum');
-
+        // console.log(treeNewData,'treeNewData');
         let loginInfo = T.auth.getLoginInfo();
         let formTimeValue = getFieldsValue();
         // let params = {
