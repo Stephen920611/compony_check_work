@@ -582,7 +582,7 @@ class JobStatisticsList extends PureComponent {
                                             // ],
                                             initialValue: T.moment(new Date().getTime()),
                                         })(
-                                            <DatePicker/>
+                                            <DatePicker allowClear={false}/>
                                         )}
                                     </Form.Item>
                                 </Col>
@@ -600,7 +600,7 @@ class JobStatisticsList extends PureComponent {
                                             // initialValue: T.moment(new Date().getTime()-24*60*60*1000),
                                             initialValue: T.moment(new Date().getTime()),
                                         })(
-                                            <DatePicker/>
+                                            <DatePicker allowClear={false}/>
                                         )}
                                     </Form.Item>
                                 </Col>
@@ -630,7 +630,7 @@ class JobStatisticsList extends PureComponent {
                                     loading={fetchStatInfoStatus}
                                     columns={columns}
                                     dataSource={tableData}
-                                    rowSelection={rowSelection}
+                                    // rowSelection={rowSelection}
                                     pagination={false}
                                     scroll={{ y: 480 }}
                                     // rowClassName={record => (record.editable ? styles.editable : '')}
