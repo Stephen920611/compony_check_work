@@ -445,8 +445,14 @@ class CheckRecordList extends PureComponent {
             if (response.code === 0) {
                 self.setState({
                     treeNewData: response.data,
+                    selectTreeKey: response.data.length > 0 ? response.data[0].hasOwnProperty('code') ? [response.data[0].code] : [] : [],
+                }, () => {
+                    self.fetchDataList(response.data)
+                });
+                /*self.setState({
+                    treeNewData: response.data,
                     treeBackData: response.data,
-                })
+                })*/
             } else {
                 T.prompt.error(response.msg);
             }
