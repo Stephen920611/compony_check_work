@@ -1203,8 +1203,8 @@ class CheckRecordList extends PureComponent {
                                     >
                                         {getFieldDecorator('startDate', {
                                             // rules: [{required: true, message: '请选择开始时间！'}],
-                                            // initialValue: T.moment(new Date(new Date(new Date().toLocaleDateString()).getTime()).getTime()),
-                                            initialValue: T.moment(new Date().getTime()),
+                                            initialValue: T.moment(new Date(new Date(new Date().toLocaleDateString()).getTime()).getTime()),
+                                            // initialValue: T.moment(new Date().getTime()),
                                         })(
                                             <DatePicker showTime={true} allowClear={false}/>
                                         )}

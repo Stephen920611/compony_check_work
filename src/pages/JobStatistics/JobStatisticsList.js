@@ -205,12 +205,13 @@ class JobStatisticsList extends PureComponent {
                 reject,
             });
         }).then(response => {
-            // console.log(response.data,'树节点');
             if (response.code === 0) {
                 self.setState({
-                    treeNewData: response.data
+                    treeNewData: response.data,
+                    selectTreeKey: response.data.length > 0 ? response.data[0].hasOwnProperty('code') ? [response.data[0].code] : [] : [],
+                }, () => {
+                    self.fetchDataList(response.data)
                 });
-                self.fetchDataList(response.data);
             } else {
                 T.prompt.error(response.msg);
             }
@@ -332,7 +333,6 @@ class JobStatisticsList extends PureComponent {
         //点击选中事件，属性可以打印查看
         const eventData = event.node.props;
         let self = this;
-
         this.setState({
             selectTreeKey: keys,
             selectedArea: eventData.name,
