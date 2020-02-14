@@ -1146,7 +1146,7 @@ class CheckRecordList extends PureComponent {
                                         defaultExpandAll={true}
                                         onSelect={this.onSelect}
                                         onExpand={this.onExpand}
-                                        // selectedKeys={selectTreeKey}
+                                        selectedKeys={selectTreeKey}
                                         expandedKeys={expandTreeKey}
                                         autoExpandParent={autoExpandParent}
                                     >
@@ -1268,7 +1268,7 @@ class CheckRecordList extends PureComponent {
                                 <Table
                                     columns={loginInfo.data.user.role === 0 ? adminColumns : leaderColumns}
                                     dataSource={members}
-                                    rowSelection={rowSelection}
+                                    // rowSelection={rowSelection}
                                     loading={fetchMemberInfoListStatus}
                                     pagination={{
                                         current: currentPage,
