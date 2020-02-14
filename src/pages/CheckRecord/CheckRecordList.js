@@ -377,7 +377,7 @@ class CheckRecordList extends PureComponent {
         let self = this;
 
         //获取树
-        this.fetchTreeData()
+        this.fetchTreeData();
 
         //获取被调查人基本情况
         /* new Promise((resolve, reject) => {
@@ -412,6 +412,7 @@ class CheckRecordList extends PureComponent {
             });
         }).then(response => {
             if (response.code === 0) {
+                console.log(response.data.bodyConditions);
                 response.data.bodyConditions.unshift({
                     name: "全部",
                     value: 0
@@ -904,15 +905,18 @@ class CheckRecordList extends PureComponent {
 
     //渲染不同的下拉框
     renderSelect = (dataSource) => {
-        return (
-            dataSource.map((item,idx) => {
-                return (
-                    <Option key={item.value} value={item.name}>
-                        {item.name}
-                    </Option>
-                )
-            })
-        )
+        if(dataSource>0){
+            return (
+                dataSource.map((item,idx) => {
+                    return (
+                        <Option key={item.value} value={item.name}>
+                            {item.name}
+                        </Option>
+                    )
+                })
+            )
+        }
+
     };
 
     render() {
