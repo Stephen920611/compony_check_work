@@ -33,10 +33,54 @@ const EnumAPI = {
 
     /*
     |----------------------------------------------------------------
-    | 连-h5-行业健康信息填报统计-相关的API地址
+    | 连-h5-统一树的接口-相关的API地址
     |----------------------------------------------------------------
     */
     fetchTreeNode: _processAPI('/tree/area-tree'), //获取树接口
+    fetchTreeDepartment: _processAPI('/tree/area-tree-department'), //根据公司id,查询部门树
+    searchTreeCompany: _processAPI('/tree/search-tree-company'), //模糊搜索公司
+    searchTreeDepartment: _processAPI('/tree/search-tree-department'), //模糊搜索部门
+    getAllDrops: _processAPI('/dict/getAllDrops'), //查询所有下拉列表(字典表，获取下拉框的信息)
+
+    /*
+   |----------------------------------------------------------------
+   | 连-h5-行业健康信息填报统计-相关的API地址
+   |----------------------------------------------------------------
+   */
+    exportStatInfo: _processAPI('/stat/export-stat-info'), //GET 导出统计信息根据公司id
+    fetchStatInfo: _processAPI('/stat/list-data'), //统计查询
+
+    /*
+     |----------------------------------------------------------------
+     | 连-h5-行业健康信息填报查询-相关的API地址
+     |----------------------------------------------------------------
+     */
+    fetchMemberInfoList: _processAPI('/member/page'), //分页查询
+    fetchMemberInfoById: _processAPI('/member/get/detail'), //根据id查询详情
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     /*
     |----------------------------------------------------------------
