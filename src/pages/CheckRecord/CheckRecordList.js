@@ -879,7 +879,8 @@ class CheckRecordList extends PureComponent {
         // let apiHref = `${window.ENV.apiDomain}` + "/excel/memberDetail?startTime=" + formStartTime + '&endTime=' + formEndTime + '&area=' + formArea + '';
         let apiHref = `${window.ENV.apiDomain}/excel/memberDetail?startTime=${formStartTime}&endTime=${formEndTime}&area=${formArea}&name=${formName}&gender=${formGender}&baseInfo=${formBaseInfo}&bodyCondition=${formBodyCondition}&fillUserId=${formFillUserId}&fillUserName=${formFillUserName}&current=${formCurrent}&size=${formSize}`;
 
-        const columns = [
+        //管理员表格
+        const adminColumns = [
             {
                 title: '序号',
                 dataIndex: 'index',
@@ -921,6 +922,69 @@ class CheckRecordList extends PureComponent {
                 key: 'idCard',
             },
 
+            {
+                title: '身体状况',
+                dataIndex: 'baseInfo',
+                key: 'baseInfo',
+            },
+            {
+                title: '填报人',
+                dataIndex: 'fillUserName',
+                key: 'fillUserName',
+            },
+            {
+                title: '填报时间',
+                dataIndex: 'status',
+                key: 'status',
+            },
+            {
+                title: '操作',
+                key: 'action',
+                // width: '15%',
+                render: (text, record) => {
+                    return (
+                        <span><a onClick={e => this.showMetadataManage(e, record)}>查看详情</a></span>
+                    );
+                },
+            }
+        ];
+        //负责人表格
+        const leaderColumns = [
+            {
+                title: '序号',
+                dataIndex: 'index',
+                key: 'index',
+            },
+            {
+                title: '所属部门',
+                dataIndex: 'department',
+                key: 'department',
+            },
+            {
+                title: '姓名',
+                dataIndex: 'name',
+                key: 'name',
+            },
+            {
+                title: '性别',
+                dataIndex: 'gender',
+                key: 'gender',
+            },
+            {
+                title: '身份证号',
+                dataIndex: 'idCard',
+                key: 'idCard',
+            },
+            {
+                title: '第一次体温',
+                dataIndex: 'firstTemperature',
+                key: 'firstTemperature',
+            },
+            {
+                title: '第二次体温',
+                dataIndex: 'secondTemperature',
+                key: 'secondTemperature',
+            },
             {
                 title: '身体状况',
                 dataIndex: 'baseInfo',
@@ -1094,7 +1158,7 @@ class CheckRecordList extends PureComponent {
                         <Row>
                             <Card bordered={false}>
                                 <Table
-                                    columns={columns}
+                                    columns={loginInfo.data.user.role === 0 ? adminColumns : leaderColumns}
                                     dataSource={members}
                                     rowSelection={rowSelection}
                                     loading={fetchCheckRecordListStatus}
