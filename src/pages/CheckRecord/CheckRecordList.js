@@ -44,7 +44,7 @@ import PageHeaderWrapper from '@/components/PageHeaderWrapper'; // @ 表示相�
 
 //数据分发页面
 /* eslint react/no-multi-comp:0 */
-@connect(({checkRecord, jobStatistics,loading}) => ({
+@connect(({checkRecord, jobStatistics, loading}) => ({
     checkRecord,
     jobStatistics,
     fetchTreeStatus: loading.effects['jobStatistics/fetchTreeNodeAction'],
@@ -412,13 +412,14 @@ class CheckRecordList extends PureComponent {
             });
         }).then(response => {
             if (response.code === 0) {
-                console.log(response.data.bodyConditions);
-                response.data.bodyConditions.unshift({
+                let bodyConditionSelect = response.data.bodyConditions;
+
+                bodyConditionSelect.unshift({
                     name: "全部",
                     value: 0
                 });
                 self.setState({
-                    bodyConditionSelect: response.data
+                    bodyConditionSelect
                 });
             } else {
                 T.prompt.error(response.msg);
@@ -468,7 +469,7 @@ class CheckRecordList extends PureComponent {
         }).then(response => {
             // console.log(response,'部门节点');
             if (response.code === 0) {
-                if(response.data.length > 0){
+                if (response.data.length > 0) {
                     let searchParentCode = response.data[0].hasOwnProperty('parentCode') ? response.data[0].parentCode : '-';
                     self.setDepart(treeNewData, searchParentCode, response.data);
                 }
@@ -482,13 +483,13 @@ class CheckRecordList extends PureComponent {
     };
 
     setDepart = (data, searchParentCode, departNodes) => {
-        data.map( item => {
-            if(item.code === searchParentCode && item.type === 'company'){
+        data.map(item => {
+            if (item.code === searchParentCode && item.type === 'company') {
                 item.nodes.length = 0;
                 departNodes.map(val => {
                     item.nodes.push(val)
                 });
-            }else {
+            } else {
                 this.setDepart(item.nodes, searchParentCode, departNodes)
             }
         });
@@ -512,12 +513,12 @@ class CheckRecordList extends PureComponent {
                 let loginInfo = T.auth.getLoginInfo();
 
                 let params = {
-                    userId:loginInfo.data.user.id,
+                    userId: loginInfo.data.user.id,
                     current: currentPage,
                     size: EnumDataSyncPageInfo.defaultPageSize,
                     startTime: T.lodash.isUndefined(values.startDate) ? '' : T.helper.dateFormat(values.startDate),      //开始时间
                     endTime: T.lodash.isUndefined(values.endDate) ? '' : T.helper.dateFormat(values.endDate),        //结束时间
-                    areaId: eventData.type === 'area' ? eventData.backId : eventData.type === 'industry' ? eventData.industryParentId: '' , //县市区Id
+                    areaId: eventData.type === 'area' ? eventData.backId : eventData.type === 'industry' ? eventData.industryParentId : '', //县市区Id
                     industryId: eventData.type === 'industry' ? eventData.backId : '', //行业Id 查询行业时 上级县市区ID必传
                     companyId: eventData.type === 'company' ? eventData.backId : '', //公司id
                     departId: eventData.type === 'depart' ? eventData.backId : '',//部门id
@@ -530,7 +531,7 @@ class CheckRecordList extends PureComponent {
                     fillUser: T.lodash.isUndefined(values.head) ? '' : values.head,   //摸排人
                     fillUserId: loginInfo.data.static_auth === 0 ? loginInfo.data.id : ''   //摸排人id
                 };
-                console.log(params,'params');
+                console.log(params, 'params');
                 new Promise((resolve, reject) => {
                     dispatch({
                         type: 'checkRecord/fetchMemberInfoListAction',
@@ -541,12 +542,12 @@ class CheckRecordList extends PureComponent {
                 }).then(response => {
                     if (response.code === 0) {
                         // console.log('1111',response.data);
-                        const { total, list } = response.data;
-                        let endData = list.map( (val,idx) => {
+                        const {total, list} = response.data;
+                        let endData = list.map((val, idx) => {
                             return {
                                 ...val,
-                                key: (currentPage-1) * 10 + idx + 1,
-                                index: (currentPage-1) * 10 + idx + 1,
+                                key: (currentPage - 1) * 10 + idx + 1,
+                                index: (currentPage - 1) * 10 + idx + 1,
                             }
                         });
                         self.setState({
@@ -576,7 +577,7 @@ class CheckRecordList extends PureComponent {
         let self = this;
         // console.log(eventData,'eventData');
 
-        if(eventData.type === 'company'){
+        if (eventData.type === 'company') {
             this.fetchDepartId(eventData)
         }
         this.setState({
@@ -710,12 +711,12 @@ class CheckRecordList extends PureComponent {
 
     onStartPageChange = (e) => {
         let r = /^\+?[1-9][0-9]*$/;
-        if(!r.test(e.target.value)) {
+        if (!r.test(e.target.value)) {
             T.prompt.error("请输入大于0的数字");
             this.setState({
                 startPageNum: ''
             })
-        }else {
+        } else {
             this.setState({
                 startPageNum: e.target.value === '' ? e.target.value : Number(e.target.value)
             })
@@ -798,12 +799,12 @@ class CheckRecordList extends PureComponent {
         let endNum;
 
         let r = /^\+?[1-9][0-9]*$/;
-        if(!r.test(e.target.value)) {
+        if (!r.test(e.target.value)) {
             T.prompt.error("请输入大于0的数字");
             this.setState({
                 endPageNum: ''
             })
-        }else {
+        } else {
             this.setState({
                 endPageNum: e.target.value === '' ? e.target.value : Number(e.target.value)
             })
@@ -839,19 +840,19 @@ class CheckRecordList extends PureComponent {
         } = this.state;
         let currentNum = Number(endPageNum);
         let endNum;
-        if(currentNum <= 0){
+        if (currentNum <= 0) {
             endNum = '';
-        }else if(currentNum <= startPageNum && currentNum > 0){
+        } else if (currentNum <= startPageNum && currentNum > 0) {
             endNum = startPageNum;
-        }else if(currentNum > startPageNum && currentNum < (maxPageSize + startPageNum) && (maxPageSize + startPageNum) <= total){
+        } else if (currentNum > startPageNum && currentNum < (maxPageSize + startPageNum) && (maxPageSize + startPageNum) <= total) {
             endNum = currentNum;
-        }else if(currentNum > startPageNum && currentNum <= (maxPageSize + startPageNum) && currentNum < total && (maxPageSize + startPageNum) > total){
+        } else if (currentNum > startPageNum && currentNum <= (maxPageSize + startPageNum) && currentNum < total && (maxPageSize + startPageNum) > total) {
             endNum = currentNum;
-        }else if(currentNum > startPageNum && currentNum <= (maxPageSize + startPageNum) && currentNum < total && (maxPageSize + startPageNum) < total){
+        } else if (currentNum > startPageNum && currentNum <= (maxPageSize + startPageNum) && currentNum < total && (maxPageSize + startPageNum) < total) {
             endNum = currentNum;
-        }else if(currentNum > startPageNum && currentNum > (maxPageSize + startPageNum) && currentNum > total && (maxPageSize + startPageNum) > total){
+        } else if (currentNum > startPageNum && currentNum > (maxPageSize + startPageNum) && currentNum > total && (maxPageSize + startPageNum) > total) {
             endNum = total;
-        }else if(currentNum > startPageNum && currentNum > (maxPageSize + startPageNum) && currentNum > total && (maxPageSize + startPageNum) < total){
+        } else if (currentNum > startPageNum && currentNum > (maxPageSize + startPageNum) && currentNum > total && (maxPageSize + startPageNum) < total) {
             endNum = maxPageSize + startPageNum;
         }
         // else if(currentNum >= (maxPageSize + startPageNum)){
@@ -880,8 +881,8 @@ class CheckRecordList extends PureComponent {
         let loginInfo = T.auth.getLoginInfo();
         let formTimeValue = getFieldsValue();
 
-        let formStartTime = T.lodash.isUndefined(formTimeValue.startDate) ? '' : T.helper.dateFormat(formTimeValue.startDate,'YYYY-MM-DD');
-        let formEndTime = T.lodash.isUndefined(formTimeValue.endDate) ? '' : T.helper.dateFormat(formTimeValue.endDate,'YYYY-MM-DD');
+        let formStartTime = T.lodash.isUndefined(formTimeValue.startDate) ? '' : T.helper.dateFormat(formTimeValue.startDate, 'YYYY-MM-DD');
+        let formEndTime = T.lodash.isUndefined(formTimeValue.endDate) ? '' : T.helper.dateFormat(formTimeValue.endDate, 'YYYY-MM-DD');
         let formArea = T.auth.isAdmin() ? selectedArea === "烟台市" ? '' : selectedArea : loginInfo.data.area;
         let formName = T.lodash.isUndefined(formTimeValue.person) ? '' : formTimeValue.person;
         let formGender = T.lodash.isUndefined(formTimeValue.sex) ? '' : formTimeValue.sex === 'all' ? '' : formTimeValue.sex;
@@ -895,19 +896,19 @@ class CheckRecordList extends PureComponent {
 
         // let apiHref = `${window.ENV.apiDomain}` + "/excel/memberDetail?startTime=" + formStartTime + '&endTime=' + formEndTime + '&area=' + formArea + '';
         let apiHref = `${window.ENV.apiDomain}/excel/memberDetail?startTime=${formStartTime}&endTime=${formEndTime}&area=${formArea}&name=${formName}&gender=${formGender}&baseInfo=${formBaseInfo}&bodyCondition=${formBodyCondition}&fillUserId=${formFillUserId}&fillUserName=${formFillUserName}&current=${formCurrent}&size=${formSize}`;
-        if(endPageNum === '' || startPageNum === ''){
+        if (endPageNum === '' || startPageNum === '') {
             T.prompt.error('起始条数和结束条数不能为空！')
-        }else {
-            const w=window.open('about:blank');
+        } else {
+            const w = window.open('about:blank');
             w.location.href = apiHref;
         }
     };
 
     //渲染不同的下拉框
     renderSelect = (dataSource) => {
-        if(dataSource>0){
+        if (dataSource.length > 0) {
             return (
-                dataSource.map((item,idx) => {
+                dataSource.map((item, idx) => {
                     return (
                         <Option key={item.value} value={item.name}>
                             {item.name}
@@ -967,8 +968,8 @@ class CheckRecordList extends PureComponent {
         //     fillUserId: loginInfo.data.static_auth === 0 ? loginInfo.data.id : ''   //摸排人id
         // };
 
-        let formStartTime = T.lodash.isUndefined(formTimeValue.startDate) ? '' : T.helper.dateFormat(formTimeValue.startDate,'YYYY-MM-DD');
-        let formEndTime = T.lodash.isUndefined(formTimeValue.endDate) ? '' : T.helper.dateFormat(formTimeValue.endDate,'YYYY-MM-DD');
+        let formStartTime = T.lodash.isUndefined(formTimeValue.startDate) ? '' : T.helper.dateFormat(formTimeValue.startDate, 'YYYY-MM-DD');
+        let formEndTime = T.lodash.isUndefined(formTimeValue.endDate) ? '' : T.helper.dateFormat(formTimeValue.endDate, 'YYYY-MM-DD');
         let formArea = T.auth.isAdmin() ? selectedArea === "烟台市" ? '' : selectedArea : loginInfo.data.area;
         let formName = T.lodash.isUndefined(formTimeValue.person) ? '' : formTimeValue.person;
         let formGender = T.lodash.isUndefined(formTimeValue.sex) ? '' : formTimeValue.sex === 'all' ? '' : formTimeValue.sex;
@@ -1219,8 +1220,8 @@ class CheckRecordList extends PureComponent {
                                     <Form.Item
                                         label='身体状况'
                                     >
-                                        {getFieldDecorator('base',{
-                                            initialValue: 0
+                                        {getFieldDecorator('base', {
+                                            initialValue: "全部"
                                         })(
                                             <Select
                                                 getPopupContainer={triggerNode => triggerNode.parentNode}
@@ -1301,10 +1302,12 @@ class CheckRecordList extends PureComponent {
                         每次最多导出{maxPageSize + 1}条
                     </div>
                     <div style={{marginTop: 10}}>
-                        起始条数：<Input placeholder="请输入起始条数" value={startPageNum} allowClear onChange={this.onStartPageChange} onBlur={this.onStartPageCheck}/>
+                        起始条数：<Input placeholder="请输入起始条数" value={startPageNum} allowClear
+                                    onChange={this.onStartPageChange} onBlur={this.onStartPageCheck}/>
                     </div>
                     <div style={{marginTop: 10}}>
-                        结束条数：<Input placeholder="请输入结束条数" value={endPageNum} allowClear onChange={this.onEndPageChange} onBlur={this.onEndPageCheck}/>
+                        结束条数：<Input placeholder="请输入结束条数" value={endPageNum} allowClear onChange={this.onEndPageChange}
+                                    onBlur={this.onEndPageCheck}/>
                     </div>
                 </Modal>
             </PageHeaderWrapper>
