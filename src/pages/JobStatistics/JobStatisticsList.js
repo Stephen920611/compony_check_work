@@ -44,6 +44,7 @@ import PageHeaderWrapper from '@/components/PageHeaderWrapper'; // @ 表示相�
 @connect(({jobStatistics, loading}) => ({
     jobStatistics,
     fetchJobStatisticsListStatus: loading.effects['jobStatistics/fetchJobStatisticsListAction'],
+    fetchTreeStatus: loading.effects['jobStatistics/fetchTreeNodeAction'],
 }))
 // class JobStatisticsList
 @Form.create()
@@ -52,6 +53,8 @@ class JobStatisticsList extends PureComponent {
         currentPage: EnumDataSyncPageInfo.defaultPage,//分页
         selectRows: [], //选择的数据列
         selectedKey: 'GA',//树节点默认选中的值
+        selectTreeKey: [],  //树选择的key值
+        expandTreeKey: [],  //树展开的key值
         selectedArea: '烟台市',//树节点默认选中的地区名字，用来后台获取参数
         tableData: [],  //表格数据
         treeData: [
@@ -177,6 +180,8 @@ class JobStatisticsList extends PureComponent {
                 title: "烟台市",
             }
         ],
+        treeNewData: [],
+        autoExpandParent: true,     //是否自动展开
         dataSource: [
             {
                 key: 1,
@@ -206,18 +211,22 @@ class JobStatisticsList extends PureComponent {
     }
 
     fetchTreeData = () => {
+        let loginInfo = T.auth.getLoginInfo();
+        let self = this;
         const {dispatch} = this.props;
         new Promise((resolve, reject) => {
             dispatch({
                 type: 'jobStatistics/fetchTreeNodeAction',
-                userId: 2,
+                userId: loginInfo.data.user.id,
                 resolve,
                 reject,
             });
         }).then(response => {
-            console.log(response,'response');
+            console.log(response,'树节点');
             if (response.code === 0) {
-
+                self.setState({
+                    treeNewData: response.data
+                })
             } else {
                 T.prompt.error(response.msg);
             }
@@ -225,7 +234,8 @@ class JobStatisticsList extends PureComponent {
     };
 
     //获取当前页数数据
-    fetchDataList = () => {
+    fetchDataList = (eventData) => {
+        console.log(eventData,'eventData');
         const {dispatch, form} = this.props;
         const {currentPage, selectedArea} = this.state;
         let self = this;
@@ -236,33 +246,38 @@ class JobStatisticsList extends PureComponent {
                 let params = {
                     // current: currentPage,
                     // size: EnumDataSyncPageInfo.defaultPageSize,
+                    userId: loginInfo.data.user.id,
+                    areaId: eventData.type === 'area' ? eventData.backId : eventData.type === 'industry' ? eventData.industryParentId: '' ,
+                    industryId: eventData.type === 'industry' ? eventData.backId : '',
+                    companyId: eventData.type === 'company' ? eventData.backId : '',
                     start: T.lodash.isUndefined(values.startDate) ? '' : values.startDate === null ?  '' : T.helper.dateFormat(values.startDate,'YYYY-MM-DD'),      //开始时间
                     end: T.lodash.isUndefined(values.endDate) ? '' : values.endDate === null ?  '' : T.helper.dateFormat(values.endDate,'YYYY-MM-DD'),      //开始时间
-                    area: T.auth.isAdmin() ? selectedArea === "烟台市" ? '' : selectedArea : loginInfo.data.area,           //县市区(烟台市传空)
                 };
-                new Promise((resolve, reject) => {
-                    dispatch({
-                        type: 'jobStatistics/fetchJobStatisticsListAction',
-                        params,
-                        resolve,
-                        reject,
-                    });
-                }).then(response => {
-                    if (response.code === 0) {
-                        let endData = response.data.map( (val,idx) => {
-                            return {
-                                ...val,
-                                key: idx + 1,
-                                index: idx + 1,
-                            }
-                        });
-                        self.setState({
-                            tableData: endData,
-                        })
-                    } else {
-                        T.prompt.error(response.msg);
-                    }
-                });
+                console.log(params,'params');
+                // new Promise((resolve, reject) => {
+                //     dispatch({
+                //         type: 'jobStatistics/fetchStatInfoAction',
+                //         params,
+                //         resolve,
+                //         reject,
+                //     });
+                // }).then(response => {
+                //     console.log(response,'response');
+                //     if (response.code === 0) {
+                //         // let endData = response.data.map( (val,idx) => {
+                //         //     return {
+                //         //         ...val,
+                //         //         key: idx + 1,
+                //         //         index: idx + 1,
+                //         //     }
+                //         // });
+                //         // self.setState({
+                //         //     tableData: endData,
+                //         // })
+                //     } else {
+                //         T.prompt.error(response.msg);
+                //     }
+                // });
             }
         });
     };
@@ -298,6 +313,7 @@ class JobStatisticsList extends PureComponent {
             this.setState({dataSource: newData});
         }
     }
+
     showEdit(e,fieldName, key) {
         const {dataSource} = this.state;
         const newData = dataSource.map(item => ({...item}));
@@ -330,45 +346,69 @@ class JobStatisticsList extends PureComponent {
         //点击选中事件，属性可以打印查看
         const eventData = event.node.props;
         let self = this;
-        console.log('keys',keys);
-        console.log('eventData',eventData);
 
         this.setState({
-            selectedKey: keys[0],
+            selectTreeKey: keys,
             selectedArea: eventData.name
         }, () => {
-            self.fetchDataList()
+            self.fetchDataList(eventData)
         });
     };
 
     //渲染树节点
-    renderTreeNodes = data => {
+    /**
+     *
+     * @param data
+     * @param industryParentId 点击行业时，行业父节点县市区ID必传 ，为了更好地拿数据，所以要做这个
+     * @returns {Array|*}
+     */
+    renderTreeNodes = (data, industryParentId = '') => {
         return data.map(item => {
-            if (item.children) {
+            if (item.nodes) {
                 return (
-                    <TreeNode {...item} dataRef={item} title={item.name} key={item.id}>
-                        {this.renderTreeNodes(item.children)}
+                    <TreeNode
+                        {...item}
+                        dataRef={item}
+                        name={item.text}
+                        title={item.text}
+                        key={item.code}
+                        id={item.code}
+                        backId={item.id}
+                        pId={item.parentCode}
+                        industryParentId={industryParentId}
+                    >
+                        {this.renderTreeNodes(item.nodes, item.id)}
                     </TreeNode>
                 );
             }
-            return <TreeNode {...item} dataRef={item} title={item.name} key={item.id} isLeaf/>;
+            return <TreeNode
+                {...item}
+                dataRef={item}
+                name={item.text}
+                title={item.text}
+                key={item.code}
+                id={item.code}
+                backId={item.id}
+                isLeaf
+                pId={item.parentCode}
+            />;
         });
     };
 
-    //渲染select树节点
-    renderSelectTreeNodes = data => {
-        return data.map(item => {
-            if (item.children) {
-                return (
-                    <TreeSelect.TreeNode {...item} dataRef={item} title={item.name} value={item.name} key={item.id}>
-                        {this.renderSelectTreeNodes(item.children)}
-                    </TreeSelect.TreeNode>
-                );
-            }
-            return <TreeSelect.TreeNode {...item} dataRef={item} title={item.name} value={item.name} key={item.id}
-                                        isLeaf/>;
-        });
-    };
+    // //渲染select树节点
+    // renderSelectTreeNodes = data => {
+    //     return data.map(item => {
+    //         if (item.children) {
+    //             return (
+    //                 <TreeSelect.TreeNode {...item} dataRef={item} title={item.name} value={item.name} key={item.id}>
+    //                     {this.renderSelectTreeNodes(item.children)}
+    //                 </TreeSelect.TreeNode>
+    //             );
+    //         }
+    //         return <TreeSelect.TreeNode {...item} dataRef={item} title={item.name} value={item.name} key={item.id}
+    //                                     isLeaf/>;
+    //     });
+    // };
 
     //查询
     searchDataSource = (e) => {
@@ -399,13 +439,36 @@ class JobStatisticsList extends PureComponent {
         });
     };
 
+    /**
+     * 展开树操作
+     * @param {array} expandedKeys
+     */
+    onExpand = expandedKeys => {
+        this.setState({
+            autoExpandParent: false,
+        });
+        this.setState({
+            expandTreeKey: expandedKeys
+        });
+    };
+
     render() {
         const {
             fetchTreeStatus,
             fetchJobStatisticsListStatus,
             form: {getFieldDecorator, getFieldValue, getFieldsValue},
         } = this.props;
-        const {treeData, currentPage, selectedKey, tableData, selectedArea} = this.state;
+        const {
+            treeData,
+            treeNewData,
+            currentPage,
+            selectedKey,
+            tableData,
+            selectedArea,
+            autoExpandParent,
+            selectTreeKey,
+            expandTreeKey
+        } = this.state;
 
         const columns = [
             {
@@ -474,7 +537,6 @@ class JobStatisticsList extends PureComponent {
             }),
         };
         let loginInfo = T.auth.getLoginInfo();
-
         //获取表单的value
         let formTimeValue = getFieldsValue();
 
@@ -485,7 +547,7 @@ class JobStatisticsList extends PureComponent {
         return (
             <PageHeaderWrapper title="行业健康信息填报统计">
                 <Row gutter={24}>
-                    <Col xl={4} lg={4} md={4} sm={24} xs={24}>
+                    <Col xl={6} lg={6} md={6} sm={24} xs={24}>
                         <Card
                             title="资源列表"
                             bordered={false}
@@ -499,15 +561,18 @@ class JobStatisticsList extends PureComponent {
                                     <DirectoryTree
                                         multiple
                                         defaultExpandAll={true}
-                                        onSelect={this.onSelect.bind(this)}
-                                        selectedKeys={[selectedKey]}
+                                        onSelect={this.onSelect}
+                                        onExpand={this.onExpand}
+                                        selectedKeys={selectTreeKey}
+                                        expandedKeys={expandTreeKey}
+                                        autoExpandParent={autoExpandParent}
                                     >
-                                        {this.renderTreeNodes(treeData)}
+                                        {this.renderTreeNodes(treeNewData)}
                                     </DirectoryTree>
                             }
                         </Card>
                     </Col>
-                    <Col xl={20} lg={20} md={20} sm={24} xs={24} className={styles.dataSourceTableList}>
+                    <Col xl={18} lg={18} md={18} sm={24} xs={24} className={styles.dataSourceTableList}>
                         <Form layout="inline" onSubmit={this.searchDataSource}>
                             <Row className={`${styles.dataSourceTitle} ${styles.tableListForms}`}
                                  style={{marginBottom: 10}}>

@@ -8,12 +8,12 @@ import EnumAPI from './../../constants/EnumAPI';
 import {postJSON, post, get} from './../../utils/core/requestTj';
 import T from './../../utils/T';
 
-//获取摸排工作统计页面
-export async function fetchJobStatisticsList(params = {}) {
-    return post(EnumAPI.fetchJobStatisticsList, params);
+//统计查询
+export async function fetchStatInfo(params = {}) {
+    return post(EnumAPI.fetchStatInfo, params);
 }
 
-//获取摸排工作统计页面
+//获取树接口
 export async function fetchTreeNode(params = {}) {
     return post(EnumAPI.fetchTreeNode, params);
 }

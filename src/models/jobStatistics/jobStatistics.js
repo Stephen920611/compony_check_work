@@ -8,6 +8,7 @@
 import {
     fetchTreeNode,
     fetchJobStatisticsList,
+    fetchStatInfo,
 } from '@/services/jobStatistics/jobStatistics';
 import T from '../../utils/T';
 
@@ -37,6 +38,16 @@ export default {
         * fetchJobStatisticsListAction({params, resolve, reject}, {call, put}) {
             try {
                 const response = yield call(fetchJobStatisticsList, params);
+                resolve(response);
+            } catch (error) {
+                reject(error);
+            }
+        },
+
+        //统计查询
+        * fetchStatInfoAction({params, resolve, reject}, {call, put}) {
+            try {
+                const response = yield call(fetchStatInfo, params);
                 resolve(response);
             } catch (error) {
                 reject(error);
