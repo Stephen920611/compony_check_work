@@ -29,6 +29,6 @@ export async function fetchMemberInfoList(params = {}) {
 }
 
 //获取下拉选项
-export async function fetchSelectInfo(params = {}) {
-    return post(EnumAPI.fetchSelectInfo, params);
+export async function getAllDrops(params = {}) {
+    return get(EnumAPI.getAllDrops);
 }

@@ -13,6 +13,7 @@ import {
     fetchTreeDepartment,
     fetchMemberInfoList,
     fetchMemberInfoById,
+    getAllDrops,
 } from '@/services/checkRecord/checkRecord';
 import T from '../../utils/T';
 
@@ -58,9 +59,9 @@ export default {
             }
         },
         //获取下拉选项
-        * fetchSelectInfoAction({params, resolve, reject}, {call, put}) {
+        * getAllDropsAction({_, resolve, reject}, {call, put}) {
             try {
-                const response = yield call(fetchSelectInfo, params);
+                const response = yield call(getAllDrops,);
                 resolve(response);
             } catch (error) {
                 reject(error);

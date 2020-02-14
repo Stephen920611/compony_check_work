@@ -380,44 +380,41 @@ class CheckRecordList extends PureComponent {
         this.fetchTreeData()
 
         //获取被调查人基本情况
-       /* new Promise((resolve, reject) => {
-            dispatch({
-                type: 'checkRecord/fetchSelectInfoAction',
-                params: {
-                    type: 'BASE_INFO'
-                },
-                resolve,
-                reject,
-            });
-        }).then(response => {
-            if (response.code === 0) {
-                response.data.unshift({
-                    name: "全部",
-                    value: "全部"
-                });
-                self.setState({
-                    baseInfoSelect: response.data
-                })
-            } else {
-                T.prompt.error(response.msg);
-            }
-        });*/
+        /* new Promise((resolve, reject) => {
+             dispatch({
+                 type: 'checkRecord/fetchSelectInfoAction',
+                 params: {
+                     type: 'BASE_INFO'
+                 },
+                 resolve,
+                 reject,
+             });
+         }).then(response => {
+             if (response.code === 0) {
+                 response.data.unshift({
+                     name: "全部",
+                     value: "全部"
+                 });
+                 self.setState({
+                     baseInfoSelect: response.data
+                 })
+             } else {
+                 T.prompt.error(response.msg);
+             }
+         });*/
 
-       /* //获取身体情况列表
+        //获取身体情况列表
         new Promise((resolve, reject) => {
             dispatch({
-                type: 'checkRecord/fetchSelectInfoAction',
-                params: {
-                    type: 'BODY_CONDITION'
-                },
+                type: 'checkRecord/getAllDropsAction',
                 resolve,
                 reject,
             });
         }).then(response => {
             if (response.code === 0) {
-                response.data.unshift({
+                response.data.bodyConditions.unshift({
                     name: "全部",
-                    value: "全部"
+                    value: 0
                 });
                 self.setState({
                     bodyConditionSelect: response.data
@@ -425,7 +422,7 @@ class CheckRecordList extends PureComponent {
             } else {
                 T.prompt.error(response.msg);
             }
-        });*/
+        });
         // this.fetchDataList();
     }
 
@@ -514,7 +511,7 @@ class CheckRecordList extends PureComponent {
                 let loginInfo = T.auth.getLoginInfo();
 
                 let params = {
-                    userId:1,
+                    userId:loginInfo.data.user.id,
                     current: currentPage,
                     size: EnumDataSyncPageInfo.defaultPageSize,
                     startTime: T.lodash.isUndefined(values.startDate) ? '' : T.helper.dateFormat(values.startDate),      //开始时间
@@ -1060,8 +1057,8 @@ class CheckRecordList extends PureComponent {
             },
             {
                 title: '所属部门',
-                dataIndex: 'department',
-                key: 'department',
+                dataIndex: 'departmentName',
+                key: 'departmentName',
             },
             {
                 title: '姓名',
@@ -1090,8 +1087,8 @@ class CheckRecordList extends PureComponent {
             },
             {
                 title: '身体状况',
-                dataIndex: 'baseInfo',
-                key: 'baseInfo',
+                dataIndex: 'bodyConditionName',
+                key: 'bodyConditionName',
             },
             {
                 title: '填报人',
@@ -1100,8 +1097,8 @@ class CheckRecordList extends PureComponent {
             },
             {
                 title: '填报时间',
-                dataIndex: 'status',
-                key: 'status',
+                dataIndex: 'createTime',
+                key: 'createTime',
             },
             {
                 title: '操作',
@@ -1145,7 +1142,7 @@ class CheckRecordList extends PureComponent {
                                         defaultExpandAll={true}
                                         onSelect={this.onSelect}
                                         onExpand={this.onExpand}
-                                        selectedKeys={selectTreeKey}
+                                        // selectedKeys={selectTreeKey}
                                         expandedKeys={expandTreeKey}
                                         autoExpandParent={autoExpandParent}
                                     >
@@ -1192,8 +1189,9 @@ class CheckRecordList extends PureComponent {
                                         {getFieldDecorator('startDate', {
                                             // rules: [{required: true, message: '请选择开始时间！'}],
                                             // initialValue: T.moment(new Date(new Date(new Date().toLocaleDateString()).getTime()).getTime()),
+                                            initialValue: T.moment(new Date().getTime()),
                                         })(
-                                            <DatePicker showTime={true}/>
+                                            <DatePicker showTime={true} allowClear={false}/>
                                         )}
                                     </Form.Item>
                                 </Col>
@@ -1203,9 +1201,9 @@ class CheckRecordList extends PureComponent {
                                     >
                                         {getFieldDecorator('endDate', {
                                             // rules: [{required: true, message: '请选择结束时间！'}],
-                                            // initialValue: T.moment(new Date().getTime()),
+                                            initialValue: T.moment(new Date().getTime()),
                                         })(
-                                            <DatePicker showTime={true}/>
+                                            <DatePicker showTime={true} allowClear={false}/>
                                         )}
                                     </Form.Item>
                                 </Col>
@@ -1218,13 +1216,13 @@ class CheckRecordList extends PureComponent {
                                         label='身体状况'
                                     >
                                         {getFieldDecorator('base',{
-                                            initialValue: "全部"
+                                            initialValue: 0
                                         })(
                                             <Select
                                                 getPopupContainer={triggerNode => triggerNode.parentNode}
                                             >
                                                 {
-                                                    this.renderSelect(baseInfoSelect)
+                                                    this.renderSelect(bodyConditionSelect)
                                                 }
                                             </Select>
                                         )}
