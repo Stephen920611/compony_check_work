@@ -10,6 +10,8 @@ import {
     fetchCheckRecordList,
     fetchSelectInfo,
     fetchTreeNode,
+    fetchMemberInfoList,
+    fetchMemberInfoById,
 } from '@/services/checkRecord/checkRecord';
 import T from '../../utils/T';
 
@@ -44,10 +46,10 @@ export default {
                 reject(error);
             }
         },
-        //获取摸排记录列表页面
-        * fetchCheckRecordListAction({params, resolve, reject}, {call, put}) {
+        //获取列表页面
+        * fetchMemberInfoListAction({params, resolve, reject}, {call, put}) {
             try {
-                const response = yield call(fetchCheckRecordList, params);
+                const response = yield call(fetchMemberInfoList, params);
                 resolve(response);
             } catch (error) {
                 reject(error);
@@ -63,9 +65,9 @@ export default {
             }
         },
         //查看详情页面
-        * fetchMemberInfoAction({id, resolve, reject}, {call, put}) {
+        * fetchMemberInfoByIdAction({params, resolve, reject}, {call, put}) {
             try {
-                const response = yield call(fetchMemberInfo, id);
+                const response = yield call(fetchMemberInfoById, params);
                 resolve(response);
             } catch (error) {
                 reject(error);

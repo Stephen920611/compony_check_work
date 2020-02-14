@@ -14,13 +14,13 @@ export async function fetchTreeNode(userId) {
 }
 
 //查看详情页面
-export async function fetchMemberInfo(id) {
-    return get(EnumAPI.fetchMemberInfo(id));
+export async function fetchMemberInfoById(params = {}) {
+    return post(EnumAPI.fetchMemberInfoById,params);
 }
 
-//获取摸排记录查询列表
-export async function fetchCheckRecordList(params = {}) {
-    return get(EnumAPI.fetchCheckRecordList, params);
+//分页查询列表
+export async function fetchMemberInfoList(params = {}) {
+    return post(EnumAPI.fetchMemberInfoList, params);
 }
 
 //获取下拉选项

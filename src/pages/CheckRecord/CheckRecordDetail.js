@@ -25,7 +25,7 @@ class CheckRecordDetail extends PureComponent {
             currentInfo: {},
             member: {},
             touch: [],
-            userId:3
+            industryId:3
         //    1复工企业  2 商超  3快递外卖 4酒店
         }
     }
@@ -36,21 +36,27 @@ class CheckRecordDetail extends PureComponent {
         //验证是否刷新页面
         T.auth.returnSpecialMainPage(location, '/checkRecord');
         if (location.hasOwnProperty("params") && location["params"].hasOwnProperty("data")) {
+            self.setState({
+                industryId:location["params"]["data"]['industryId']
+            });
             new Promise((resolve, reject) => {
                 dispatch({
-                    type: 'checkRecord/fetchMemberInfoAction',
-                    id: location["params"]["data"]["id"],
+                    type: 'checkRecord/fetchMemberInfoByIdAction',
+                    params:{
+                        id: location["params"]["data"]["id"],
+                    },
                     resolve,
                     reject,
                 });
             }).then(response => {
-                const {currnets, member, touch, activities} = response.data;
+                console.log('11111',response.data);
+
                 if (response.code === 0) {
                     self.setState({
-                        activities: T.lodash.isUndefined(activities[0]) ? {} : activities[0],
-                        currentInfo: T.lodash.isUndefined(currnets[0]) ? {} : currnets[0],
-                        member,
-                        touch: T.lodash.isUndefined(touch[0]) ? {} : touch[0],
+                        // activities: T.lodash.isUndefined(activities[0]) ? {} : activities[0],
+                        // currentInfo: T.lodash.isUndefined(currnets[0]) ? {} : currnets[0],
+                        member:response.data,
+                        // touch: T.lodash.isUndefined(touch[0]) ? {} : touch[0],
                     })
                 } else {
                     T.prompt.error(response.msg);
@@ -66,7 +72,7 @@ class CheckRecordDetail extends PureComponent {
             currentInfo,
             member,
             touch,
-            userId
+            industryId
         } = this.state;
         const breadcrumbDetail = [
             {
@@ -85,7 +91,7 @@ class CheckRecordDetail extends PureComponent {
             >
                 <div>
                     <div className={styles.detailItem}>
-                        { userId === 1 ? ''
+                        { industryId === 1 ? ''
                             :<div>
                             <div className={styles.detailTitleName}>
                                 所属行业
@@ -99,7 +105,7 @@ class CheckRecordDetail extends PureComponent {
                                         <span>县市区：</span>
                                         <span>
                                         {
-                                            member.hasOwnProperty('area') ? member.area : '---'
+                                            member.hasOwnProperty('areaName') ? member.areaName : '---'
                                         }
                                     </span>
                                     </Col>
@@ -107,15 +113,15 @@ class CheckRecordDetail extends PureComponent {
                                         <span>所属行业：</span>
                                         <span>
                                         {
-                                            member.hasOwnProperty('name') ? member.name : '---'
+                                            member.hasOwnProperty('industryName') ? member.industryName : '---'
                                         }
                                     </span>
                                     </Col>
-                                    {userId===3?<Col span={6} className={styles.detailBtns}>
+                                    {industryId===3?<Col span={6} className={styles.detailBtns}>
                                         <span>身份：</span>
                                         <span>
                                         {
-                                            member.hasOwnProperty('person') ? member.person : '---'
+                                            member.hasOwnProperty('hotelRole') ? member.hotelRole===1?'宾客': member.hotelRole===0?'员工':'---' : '---'
                                         }
                                     </span>
                                     </Col>:''}
@@ -127,7 +133,7 @@ class CheckRecordDetail extends PureComponent {
                         <div className={styles.detailTitleName}>
                             基本信息
                         </div>
-                        {userId===4?
+                        {industryId===4?
                             <Card style={{marginBottom:20}}
                                           loading={fetchStatus}
                         >
@@ -136,20 +142,20 @@ class CheckRecordDetail extends PureComponent {
                                     <span>酒店名称：</span>
                                     <span>
                                         {
-                                            member.hasOwnProperty('nativePlace') ? member.nativePlace : '---'
+                                            member.hasOwnProperty('companyName') ? member.companyName : '---'
                                         }
                                     </span>
                                 </Col>
                                 <Col span={6} className={styles.detailBtns}>
                                     <span>酒店地址：</span>
                                     <span>
-                                        {member.hasOwnProperty('address') ? member.address : '---'}
+                                        {member.hasOwnProperty('companyAddress') ? member.companyAddress : '---'}
                                     </span>
                                 </Col>
                                 <Col span={6}>
                                     <span>入住房间：</span>
                                     <span>
-                                        {member.hasOwnProperty('idCard') ? member.idCard : '---'}
+                                        {member.hasOwnProperty('hotelRole') ? member.hotelRole : '---'}
                                     </span>
                                 </Col>
 
@@ -170,13 +176,13 @@ class CheckRecordDetail extends PureComponent {
                                 <Col span={6}>
                                     <span>性别：</span>
                                     <span>
-                                        {member.hasOwnProperty('sex') ? member.sex : '---'}
+                                        {member.hasOwnProperty('gender') ? member.gender : '---'}
                                     </span>
                                 </Col>
                                 <Col span={6}>
                                     <span>籍贯</span>
                                     <span>
-                                        {member.hasOwnProperty('baseInfo') ? member.baseInfo : '---'}
+                                        {member.hasOwnProperty('nativePlace') ? member.nativePlace : '---'}
                                     </span>
                                 </Col>
                             </Row>
@@ -184,25 +190,25 @@ class CheckRecordDetail extends PureComponent {
                                 <Col span={6}>
                                     <span>现住址：</span>
                                     <span>
-                                        {member.hasOwnProperty('name') ? member.name : '---'}
+                                        {member.hasOwnProperty('address') ? member.address : '---'}
                                     </span>
                                 </Col>
                                 <Col span={6}>
                                     <span>身份证号码：</span>
                                     <span>
-                                        {member.hasOwnProperty('age') ? member.age : '---'}
+                                        {member.hasOwnProperty('idCard') ? member.idCard : '---'}
                                     </span>
                                 </Col>
                                 <Col span={6}>
                                     <span>联系电话：</span>
                                     <span>
-                                        {member.hasOwnProperty('sex') ? member.sex : '---'}
+                                        {member.hasOwnProperty('phoneNum') ? member.phoneNum : '---'}
                                     </span>
                                 </Col>
                                 <Col span={6}>
                                     <span>交通工具</span>
                                     <span>
-                                        {member.hasOwnProperty('baseInfo') ? member.baseInfo : '---'}
+                                        {member.hasOwnProperty('trafficway') ? member.trafficway : '---'}
                                     </span>
                                 </Col>
                             </Row>
@@ -210,7 +216,7 @@ class CheckRecordDetail extends PureComponent {
                                 <Col span={6}>
                                     <span>1月25日之后是否离开过烟台：</span>
                                     <span>
-                                        {member.hasOwnProperty('name') ? member.name : '---'}
+                                        {member.hasOwnProperty('leaveYt') ? member.leaveYt : '---'}
                                     </span>
                                 </Col>
                             </Row>
@@ -224,20 +230,20 @@ class CheckRecordDetail extends PureComponent {
                                         <span>企业名称：</span>
                                         <span>
                                         {
-                                            member.hasOwnProperty('nativePlace') ? member.nativePlace : '---'
+                                            member.hasOwnProperty('companyName') ? member.companyName : '---'
                                         }
                                     </span>
                                     </Col>
                                     <Col span={6} className={styles.detailBtns}>
-                                        <span>地址：</span>
+                                        <span>企业地址：</span>
                                         <span>
-                                        {member.hasOwnProperty('address') ? member.address : '---'}
+                                        {member.hasOwnProperty('companyAddress') ? member.companyAddress : '---'}
                                     </span>
                                     </Col>
                                     <Col span={6}>
                                         <span>员工所在部门：</span>
                                         <span>
-                                        {member.hasOwnProperty('idCard') ? member.idCard : '---'}
+                                        {member.hasOwnProperty('departmentName') ? member.departmentName : '---'}
                                     </span>
                                     </Col>
 
@@ -258,13 +264,13 @@ class CheckRecordDetail extends PureComponent {
                                     <Col span={6}>
                                         <span>性别：</span>
                                         <span>
-                                        {member.hasOwnProperty('sex') ? member.sex : '---'}
+                                        {member.hasOwnProperty('gender') ? member.gender===1?'男':member.gender===0?'女':'---' : '---'}
                                     </span>
                                     </Col>
                                     <Col span={6}>
                                         <span>籍贯</span>
                                         <span>
-                                        {member.hasOwnProperty('baseInfo') ? member.baseInfo : '---'}
+                                        {member.hasOwnProperty('nativePlace') ? member.nativePlace : '---'}
                                     </span>
                                     </Col>
                                 </Row>
@@ -272,39 +278,39 @@ class CheckRecordDetail extends PureComponent {
                                     <Col span={6}>
                                         <span>现住址：</span>
                                         <span>
-                                        {member.hasOwnProperty('name') ? member.name : '---'}
+                                        {member.hasOwnProperty('address') ? member.address : '---'}
                                     </span>
                                     </Col>
                                     <Col span={6}>
                                         <span>身份证号码：</span>
                                         <span>
-                                        {member.hasOwnProperty('age') ? member.age : '---'}
+                                        {member.hasOwnProperty('idCard') ? member.idCard : '---'}
                                     </span>
                                     </Col>
                                     <Col span={6}>
                                         <span>联系电话：</span>
                                         <span>
-                                        {member.hasOwnProperty('sex') ? member.sex : '---'}
+                                        {member.hasOwnProperty('phoneNum') ? member.phoneNum : '---'}
                                     </span>
                                     </Col>
                                     <Col span={6}>
                                         <span>通勤方式</span>
                                         <span>
-                                        {member.hasOwnProperty('baseInfo') ? member.baseInfo : '---'}
+                                        {member.hasOwnProperty('trafficWay') ? member.trafficWay : '---'}
                                     </span>
                                     </Col>
                                 </Row>
                                 <Row className={styles.detailTitle}>
-                                    {userId===3 ? <Col span={6}>
+                                    {industryId===3 ? <Col span={6}>
                                         <span>工作覆盖区域</span>
                                         <span>
-                                        {member.hasOwnProperty('baseArea') ? member.baseArea : '---'}
+                                        {member.hasOwnProperty('workCover') ? member.workCover : '---'}
                                     </span>
                                     </Col>:''}
                                     <Col span={6}>
                                         <span>1月25日之后是否离开过烟台：</span>
                                         <span>
-                                        {member.hasOwnProperty('name') ? member.name : '---'}
+                                        {member.hasOwnProperty('leaveYt') ? member.leaveYt===1?'是':member.leaveYt===0?'否':'---' : '---'}
                                     </span>
                                     </Col>
                                 </Row>
@@ -324,7 +330,7 @@ class CheckRecordDetail extends PureComponent {
                                 <Col span={6}>
                                     <span>是否与确诊、疑似病例密切接触过：</span>
                                     <span>
-                                        {touch.hasOwnProperty('isTouchSuspect') ? touch.isTouchSuspect : '---'}
+                                        {member.hasOwnProperty('isTouchSuspect') ? member.isTouchSuspect===1?'是':member.isTouchSuspect===0?'否':'---' : '---'}
                                     </span>
                                 </Col>
                             </Row>
@@ -332,25 +338,25 @@ class CheckRecordDetail extends PureComponent {
                                 <Col span={6}>
                                     <span>接触者姓名：</span>
                                     <span>
-                                        {touch.hasOwnProperty('suspectName') ? touch.suspectName : '---'}
+                                        {member.hasOwnProperty('suspectName') ? member.suspectName : '---'}
                                     </span>
                                 </Col>
                                 <Col span={6}>
                                     <span>接触者身份证号：</span>
                                     <span>
-                                        {touch.hasOwnProperty('suspectIdCard') ? touch.suspectIdCard : '---'}
+                                        {member.hasOwnProperty('suspectIdCard') ? member.suspectIdCard : '---'}
                                     </span>
                                 </Col>
                                 <Col span={6} className={styles.detailBtns}>
                                     <span>接触时间：</span>
                                     <span>
-                                        {touch.hasOwnProperty('suspectTime') ? touch.suspectTime : '---'}
+                                        {member.hasOwnProperty('suspectTime') ?  T.helper.dateFormat(member.suspectTime,'YYYY-MM-DD HH:mm') : '---'}
                                     </span>
                                 </Col>
                                 <Col span={6}>
                                     <span>接触地点：</span>
                                     <span>
-                                        {touch.hasOwnProperty('suspectPoint') ? touch.suspectPoint : '---'}
+                                        {member.hasOwnProperty('suspectPoint') ? member.suspectPoint : '---'}
                                     </span>
                                 </Col>
                             </Row>
@@ -358,7 +364,7 @@ class CheckRecordDetail extends PureComponent {
                                 <Col span={6}>
                                     <span>是否与密切接触者共同生活、工作、学习、聚会过：</span>
                                     <span>
-                                        {touch.hasOwnProperty('isTouchIntimate') ? touch.isTouchIntimate : '---'}
+                                        {member.hasOwnProperty('isTouchIntimate') ? member.isTouchIntimate===1?'是':member.isTouchIntimate===0?'否':'---' : '---'}
                                     </span>
                                 </Col>
                             </Row>
@@ -366,25 +372,25 @@ class CheckRecordDetail extends PureComponent {
                                 <Col span={6}>
                                     <span>接触者姓名：</span>
                                     <span>
-                                        {touch.hasOwnProperty('intimateName') ? touch.intimateName : '---'}
+                                        {member.hasOwnProperty('intimateName') ? member.intimateName : '---'}
                                     </span>
                                 </Col>
                                 <Col span={6}>
                                     <span>接触者身份证号：</span>
                                     <span>
-                                        {touch.hasOwnProperty('intimateIdCard') ? touch.intimateIdCard : '---'}
+                                        {member.hasOwnProperty('intimateIdCard') ? member.intimateIdCard : '---'}
                                     </span>
                                 </Col>
                                 <Col span={6} className={styles.detailBtns}>
                                     <span>接触时间：</span>
                                     <span>
-                                        {touch.hasOwnProperty('intimateTime') ? touch.intimateTime : '---'}
+                                        {member.hasOwnProperty('intimateTime') ? T.helper.dateFormat(member.intimateTime,'YYYY-MM-DD HH:mm') : '---'}
                                     </span>
                                 </Col>
                                 <Col span={6}>
                                     <span>接触地点：</span>
                                     <span>
-                                        {touch.hasOwnProperty('intimatePoint') ? touch.intimatePoint : '---'}
+                                        {member.hasOwnProperty('intimatePoint') ? member.intimatePoint : '---'}
                                     </span>
                                 </Col>
                             </Row>
@@ -392,7 +398,7 @@ class CheckRecordDetail extends PureComponent {
                                 <Col span={6}>
                                     <span>是否与重点疫区人员接触过：</span>
                                     <span>
-                                        {touch.hasOwnProperty('isTouchInfector') ? touch.isTouchInfector : '---'}
+                                        {member.hasOwnProperty('isTouchInfector') ? member.isTouchInfector===1?'是':member.isTouchInfector===0?'否':'---' : '---'}
                                     </span>
                                 </Col>
                             </Row>
@@ -400,25 +406,25 @@ class CheckRecordDetail extends PureComponent {
                                 <Col span={6}>
                                     <span>接触者姓名：</span>
                                     <span>
-                                        {touch.hasOwnProperty('infectorName') ? touch.infectorName : '---'}
+                                        {member.hasOwnProperty('infectorName') ? member.infectorName : '---'}
                                     </span>
                                 </Col>
                                 <Col span={6}>
                                     <span>接触者身份证号：</span>
                                     <span>
-                                        {touch.hasOwnProperty('infectorIdCard') ? touch.infectorIdCard : '---'}
+                                        {member.hasOwnProperty('infectorIdCard') ? member.infectorIdCard : '---'}
                                     </span>
                                 </Col>
                                 <Col span={6} className={styles.detailBtns}>
                                     <span>接触时间：</span>
                                     <span>
-                                        {touch.hasOwnProperty('infectorTime') ? touch.infectorTime : '---'}
+                                        {member.hasOwnProperty('infectorTime') ? T.helper.dateFormat(member.infectorTime,'YYYY-MM-DD') : '---'}
                                     </span>
                                 </Col>
                                 <Col span={6}>
                                     <span>接触地点：</span>
                                     <span>
-                                        {touch.hasOwnProperty('infectorPoint') ? touch.infectorPoint : '---'}
+                                        {member.hasOwnProperty('infectorPoint') ? member.infectorPoint : '---'}
                                     </span>
                                 </Col>
                             </Row>
@@ -434,19 +440,19 @@ class CheckRecordDetail extends PureComponent {
                                 <Col span={6}>
                                     <span>第一次体温：</span>
                                     <span>
-                                        {currentInfo.hasOwnProperty('bodyCondition') ? currentInfo.bodyCondition : '---'}
+                                        {member.hasOwnProperty('temperatureOne') ? member.temperatureOne : '---'}
                                     </span>
                                 </Col>
                                 <Col span={6} className={styles.detailBtns}>
                                     <span>第二次体温：</span>
                                     <span>
-                                        {currentInfo.hasOwnProperty('hasSeek') ? currentInfo.hasSeek : '---'}
+                                        {member.hasOwnProperty('temperatureTwo') ? member.hasSeek : 'temperatureTwo'}
                                     </span>
                                 </Col>
                                 <Col span={6}>
                                     <span>具体状况：</span>
                                     <span>
-                                        {currentInfo.hasOwnProperty('seekHospital') ? currentInfo.seekHospital : '---'}
+                                        {member.hasOwnProperty('bodyConditionName') ? member.bodyConditionName : '---'}
                                     </span>
                                 </Col>
                             </Row>
@@ -455,13 +461,13 @@ class CheckRecordDetail extends PureComponent {
                                 <Col span={12} className={styles.detailBtns}>
                                     <span>家人是否有湖北等疫情较重地区居住史、旅行史或者病例接触史：</span>
                                     <span>
-                                        {currentInfo.hasOwnProperty('controlTime') ? currentInfo.controlTime : '---'}
+                                        {member.hasOwnProperty('familyToHubei') ? member.familyToHubei === 1 ? '是':member.familyToHubei===0?'否':'---' : '---'}
                                     </span>
                                 </Col>
                                 <Col span={6}>
                                     <span>填报责任人：</span>
                                     <span>
-                                        {currentInfo.hasOwnProperty('nextMeasures') ? currentInfo.nextMeasures : '---'}
+                                        {member.hasOwnProperty('fillUser') ? member.fillUser : '---'}
                                     </span>
                                 </Col>
 
