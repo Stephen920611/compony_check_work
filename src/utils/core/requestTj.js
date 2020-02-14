@@ -11,6 +11,8 @@ import queryString from 'query-string';
 import './../../config/ENV';
 import _ from 'lodash';
 import T from './../T';
+import * as store from './storage';
+
 // 解决IE报warning Unhandled Rejections Error 参数书不正确的问题
 Promise._unhandledRejectionFn = function (rejectError) {};
 
@@ -69,8 +71,9 @@ const _request = (options = {}, isLogin = false) => {
         Singleton.getInstance().request(options).then((resp) => {
             //前端自己判断是不是登录，如果不是的话返回的参数跟登录的接口返回的参数不一致
             if (isLogin) {
-                const {data, token, code, msg} = resp.data;
-                resolve({data, token, code, msg});
+                const {data, code, msg} = resp.data;
+                resolve({data, token: data.token, code, msg});
+                store.setStorage("__token__", data.token, data.expire);
             } else {
                 const {data, code, msg} = resp.data;
                 // 判断是否登录
@@ -150,7 +153,8 @@ export function post(url, params = {}, options = {}, isLogin = false) {
         method: 'post',
         data: requestParams,
         headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
+            'Content-Type': 'application/x-www-form-urlencoded',
+            // "token": isLogin ? '': store.getStorage("__token__")
         }
     }, options);
 
@@ -183,7 +187,7 @@ export function postJSON(url, params = {}, options = {}, isLogin = false, urlHas
         // data: urlHasSid ? params : hasSidParams,
         data: params,
         headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
         }
     }, options);
 

@@ -962,34 +962,29 @@ class CheckRecordList extends PureComponent {
         return (
             <PageHeaderWrapper title="行业健康信息填报查询">
                 <Row gutter={24}>
-                    {
-                        T.auth.isAdmin() ?
-                            <Col xl={4} lg={4} md={4} sm={24} xs={24}>
-                                <Card
-                                    title="资源列表"
-                                    bordered={false}
-                                    style={{
-                                        width: '100%',
-                                        height: '100%',
-                                    }}
-                                >
-                                    {
-                                        fetchTreeStatus ? <Spin/> :
-                                            <DirectoryTree
-                                                multiple
-                                                defaultExpandAll={true}
-                                                onSelect={this.onSelect.bind(this)}
-                                                selectedKeys={[selectedKey]}
-                                            >
-                                                {this.renderTreeNodes(treeData)}
-                                            </DirectoryTree>
-                                    }
-                                </Card>
-                            </Col>
-                            :
-                            null
-                    }
-                    <Col xl={T.auth.isAdmin() ? 20: 24} lg={T.auth.isAdmin() ? 20: 24} md={T.auth.isAdmin() ? 20: 24} sm={24} xs={24} className={styles.dataSourceTableList}>
+                    <Col xl={4} lg={4} md={4} sm={24} xs={24}>
+                        <Card
+                            title="资源列表"
+                            bordered={false}
+                            style={{
+                                width: '100%',
+                                height: '100%',
+                            }}
+                        >
+                            {
+                                fetchTreeStatus ? <Spin/> :
+                                    <DirectoryTree
+                                        multiple
+                                        defaultExpandAll={true}
+                                        onSelect={this.onSelect.bind(this)}
+                                        selectedKeys={[selectedKey]}
+                                    >
+                                        {this.renderTreeNodes(treeData)}
+                                    </DirectoryTree>
+                            }
+                        </Card>
+                    </Col>
+                    <Col xl={20} lg={20} md={20} sm={24} xs={24} className={styles.dataSourceTableList}>
                         <Form layout="inline" onSubmit={this.searchDataSource}>
                             <Row className={`${styles.dataSourceTitle} ${styles.tableListForms}`}
                                  style={{marginBottom: 10}}>

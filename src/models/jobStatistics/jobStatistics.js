@@ -6,6 +6,7 @@
  */
 
 import {
+    fetchTreeNode,
     fetchJobStatisticsList,
 } from '@/services/jobStatistics/jobStatistics';
 import T from '../../utils/T';
@@ -36,6 +37,16 @@ export default {
         * fetchJobStatisticsListAction({params, resolve, reject}, {call, put}) {
             try {
                 const response = yield call(fetchJobStatisticsList, params);
+                resolve(response);
+            } catch (error) {
+                reject(error);
+            }
+        },
+
+        //获取树
+        * fetchTreeNodeAction({userId, resolve, reject}, {call, put}) {
+            try {
+                const response = yield call(fetchTreeNode, {userId});
                 resolve(response);
             } catch (error) {
                 reject(error);

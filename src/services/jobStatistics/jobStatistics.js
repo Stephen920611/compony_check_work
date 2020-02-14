@@ -12,3 +12,8 @@ import T from './../../utils/T';
 export async function fetchJobStatisticsList(params = {}) {
     return post(EnumAPI.fetchJobStatisticsList, params);
 }
+
+//获取摸排工作统计页面
+export async function fetchTreeNode(params = {}) {
+    return post(EnumAPI.fetchTreeNode, params);
+}

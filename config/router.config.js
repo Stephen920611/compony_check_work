@@ -34,7 +34,7 @@ export default [
             //     component: './Dashboard/Index',
             // },
 
-            /*----------------- 摸排工作统计 -------------------*/
+            /*----------------- 行业健康信息填报统计 -------------------*/
             {
                 path: '/jobStatistics',
                 name: 'jobStatistics',
@@ -42,13 +42,13 @@ export default [
                 component: './JobStatistics/JobStatisticsList',
                 authority: ['admin']
             },
-            {
+           /* {
                 path: '/checkRecord/showDetail',
                 component: './CheckRecord/CheckRecordDetail',
                 authority: ['admin']
-            },
+            },*/
 
-            /*----------------- 摸排记录查询 -------------------*/
+            /*----------------- 行业健康信息填报查询 -------------------*/
             {
                 path: '/checkRecord',
                 name: 'checkRecord',
@@ -62,7 +62,7 @@ export default [
                 authority: ['admin']
             },
             /*----------------- 摸排记录查询 -------------------*/
-            {
+            /*{
                 path: '/addInfo',
                 name: 'addInfo',
                 icon: 'home',
@@ -87,7 +87,7 @@ export default [
                 component: './AddInfo/AddInfoEdit',
                 // authority: ['user','admin'],
                 authority: ['user'],
-            },
+            },*/
             /*----------------- 摸排工作统计表 -------------------*/
             // {
             //     path: '/touchStatisticsPage',
