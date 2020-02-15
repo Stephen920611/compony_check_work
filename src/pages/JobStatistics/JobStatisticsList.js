@@ -209,6 +209,8 @@ class JobStatisticsList extends PureComponent {
                 self.setState({
                     treeNewData: response.data,
                     selectTreeKey: response.data.length > 0 ? response.data[0].hasOwnProperty('code') ? [response.data[0].code] : [] : [],
+                    expandTreeKey: response.data.length > 0 ? response.data[0].hasOwnProperty('code') ? [response.data[0].code] : [] : [],
+
                 }, () => {
                     self.fetchDataList(response.data)
                 });

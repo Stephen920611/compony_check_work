@@ -441,13 +441,16 @@ class CheckRecordList extends PureComponent {
                 reject,
             });
         }).then(response => {
-            // console.log(response,'树节点');
+            // console.log(response.data,'树节点');
             if (response.code === 0) {
                 self.setState({
                     treeNewData: response.data,
                     selectTreeKey: response.data.length > 0 ? response.data[0].hasOwnProperty('code') ? [response.data[0].code] : [] : [],
                 }, () => {
                     self.fetchDataList(response.data)
+                });
+                self.setState({
+                    expandTreeKey: response.data.length > 0 ? response.data[0].hasOwnProperty('code') ? [response.data[0].code] : [] : [],
                 });
                 /*self.setState({
                     treeNewData: response.data,
