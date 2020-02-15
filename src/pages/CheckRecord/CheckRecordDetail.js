@@ -117,7 +117,7 @@ class CheckRecordDetail extends PureComponent {
                                         }
                                     </span>
                                     </Col>
-                                    {industryId===3?<Col span={6} className={styles.detailBtns}>
+                                    {industryId===4?<Col span={6} className={styles.detailBtns}>
                                         <span>身份：</span>
                                         <span>
                                         {
@@ -155,7 +155,8 @@ class CheckRecordDetail extends PureComponent {
                                 <Col span={6}>
                                     <span>入住房间：</span>
                                     <span>
-                                        {member.hasOwnProperty('hotelRole') ? member.hotelRole : '---'}
+                                        {/*{member.hasOwnProperty('hotelRole') ? member.hotelRole : '---'}*/}
+                                        {member.hasOwnProperty('departmentName') ? member.departmentName : '---'}
                                     </span>
                                 </Col>
 
@@ -180,7 +181,7 @@ class CheckRecordDetail extends PureComponent {
                                     </span>
                                 </Col>
                                 <Col span={6}>
-                                    <span>籍贯</span>
+                                    <span>籍贯：</span>
                                     <span>
                                         {member.hasOwnProperty('nativePlace') ? member.nativePlace : '---'}
                                     </span>
@@ -206,7 +207,7 @@ class CheckRecordDetail extends PureComponent {
                                     </span>
                                 </Col>
                                 <Col span={6}>
-                                    <span>交通工具</span>
+                                    <span>交通工具：</span>
                                     <span>
                                         {member.hasOwnProperty('trafficway') ? member.trafficway : '---'}
                                     </span>
@@ -216,7 +217,8 @@ class CheckRecordDetail extends PureComponent {
                                 <Col span={6}>
                                     <span>1月25日之后是否离开过烟台：</span>
                                     <span>
-                                        {member.hasOwnProperty('leaveYt') ? member.leaveYt : '---'}
+                                       {member.hasOwnProperty('leaveYt') ? member.leaveYt===1?'是':member.leaveYt===0?'否':'---' : '---'}
+                                        {/*{member.hasOwnProperty('leaveYt') ? member.leaveYt : '---'}*/}
                                     </span>
                                 </Col>
                             </Row>
@@ -268,7 +270,7 @@ class CheckRecordDetail extends PureComponent {
                                     </span>
                                     </Col>
                                     <Col span={6}>
-                                        <span>籍贯</span>
+                                        <span>籍贯：</span>
                                         <span>
                                         {member.hasOwnProperty('nativePlace') ? member.nativePlace : '---'}
                                     </span>
@@ -294,7 +296,7 @@ class CheckRecordDetail extends PureComponent {
                                     </span>
                                     </Col>
                                     <Col span={6}>
-                                        <span>通勤方式</span>
+                                        <span>通勤方式：</span>
                                         <span>
                                         {member.hasOwnProperty('trafficWay') ? member.trafficWay : '---'}
                                     </span>
@@ -302,7 +304,7 @@ class CheckRecordDetail extends PureComponent {
                                 </Row>
                                 <Row className={styles.detailTitle}>
                                     {industryId===3 ? <Col span={6}>
-                                        <span>工作覆盖区域</span>
+                                        <span>工作覆盖区域：</span>
                                         <span>
                                         {member.hasOwnProperty('workCover') ? member.workCover : '---'}
                                     </span>
@@ -350,7 +352,7 @@ class CheckRecordDetail extends PureComponent {
                                 <Col span={6} className={styles.detailBtns}>
                                     <span>接触时间：</span>
                                     <span>
-                                        {member.hasOwnProperty('suspectTime') ?  T.helper.dateFormat(member.suspectTime,'YYYY-MM-DD HH:mm') : '---'}
+                                        {member.hasOwnProperty('suspectTime') ? member.suspectTime===null ? '':T.helper.dateFormat(member.suspectTime,'YYYY-MM-DD') : '---'}
                                     </span>
                                 </Col>
                                 <Col span={6}>
@@ -384,7 +386,7 @@ class CheckRecordDetail extends PureComponent {
                                 <Col span={6} className={styles.detailBtns}>
                                     <span>接触时间：</span>
                                     <span>
-                                        {member.hasOwnProperty('intimateTime') ? T.helper.dateFormat(member.intimateTime,'YYYY-MM-DD HH:mm') : '---'}
+                                        {member.hasOwnProperty('intimateTime') ? member.intimateTime===null?'': T.helper.dateFormat(member.intimateTime,'YYYY-MM-DD') : '---'}
                                     </span>
                                 </Col>
                                 <Col span={6}>
@@ -418,7 +420,7 @@ class CheckRecordDetail extends PureComponent {
                                 <Col span={6} className={styles.detailBtns}>
                                     <span>接触时间：</span>
                                     <span>
-                                        {member.hasOwnProperty('infectorTime') ? T.helper.dateFormat(member.infectorTime,'YYYY-MM-DD') : '---'}
+                                        {member.hasOwnProperty('infectorTime') ? member.infectorTime===null?'':T.helper.dateFormat(member.infectorTime,'YYYY-MM-DD') : '---'}
                                     </span>
                                 </Col>
                                 <Col span={6}>

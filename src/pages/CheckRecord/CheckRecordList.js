@@ -577,7 +577,7 @@ class CheckRecordList extends PureComponent {
         const {clickTree} = this.state;
         this.props.form.resetFields();
         this.props.form.setFieldsValue({
-            startDate: T.moment(new Date().getTime()),
+            startDate: T.moment(new Date(new Date(new Date().toLocaleDateString()).getTime()).getTime()),
             endDate: T.moment(new Date().getTime()),
         });
         this.fetchDataList(clickTree);
@@ -1075,18 +1075,18 @@ class CheckRecordList extends PureComponent {
             },
             {
                 title: '所属部门',
-                dataIndex: 'departmentName',
-                key: 'departmentName',
+                dataIndex: 'departName',
+                key: 'departName',
             },
             {
                 title: '姓名',
-                dataIndex: 'name',
-                key: 'name',
+                dataIndex: 'memberName',
+                key: 'memberName',
             },
             {
                 title: '性别',
-                dataIndex: 'gender',
-                key: 'gender',
+                dataIndex: 'genderName',
+                key: 'genderName',
             },
             {
                 title: '身份证号',
@@ -1110,8 +1110,8 @@ class CheckRecordList extends PureComponent {
             },
             {
                 title: '填报人',
-                dataIndex: 'fillUserName',
-                key: 'fillUserName',
+                dataIndex: 'fillUser',
+                key: 'fillUser',
             },
             {
                 title: '填报时间',
