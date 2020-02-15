@@ -15,6 +15,7 @@ window.ENV = (function () {
     // let apiDomain = "http://61.156.14.19:10002/api"; //线上api接口
     // let apiDomain = "http://61.156.14.61:10005/api"; //线上api接口
     let apiDomain = "http://mp.vipplus.pro:8085/ceshi-api"; //连永超测试api接口
+    // let apiDomain = "http://61.156.14.61:10006/api"; //线上api接口
 
     return {
         apiDomain: apiDomain,         // api请求接口   测试服务器
