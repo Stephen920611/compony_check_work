@@ -930,7 +930,6 @@ class CheckRecordList extends PureComponent {
                 })
             )
         }
-
     };
 
     render() {

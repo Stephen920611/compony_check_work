@@ -46,6 +46,8 @@ class Register extends Component {
         visible: false,
         help: '',
         prefix: '86',
+        userTypeSelect: [],     //用户类型
+        citySelect: [],     //县市区
     };
 
     componentDidUpdate() {
@@ -159,6 +161,21 @@ class Register extends Component {
         });
     };
 
+    //渲染不同的下拉框
+    renderSelect = (dataSource) => {
+        if (dataSource.length > 0) {
+            return (
+                dataSource.map((item, idx) => {
+                    return (
+                        <Option key={item.value} value={item.value}>
+                            {item.name}
+                        </Option>
+                    )
+                })
+            )
+        }
+    };
+
     renderPasswordProgress = () => {
         const {form} = this.props;
         const value = form.getFieldValue('password');
@@ -179,7 +196,15 @@ class Register extends Component {
     render() {
         const {form, submitting} = this.props;
         const {getFieldDecorator} = form;
-        const {count, prefix, help, visible} = this.state;
+        const {
+            count,
+            prefix,
+            help,
+            visible,
+            userTypeSelect,
+            citySelect
+        } = this.state;
+        console.log(userTypeSelect,'userTypeSelect');
         const formItemLayout = {
             labelCol: {
                 xs: {span: 24},
@@ -211,6 +236,7 @@ class Register extends Component {
                 <Form {...formItemLayout} onSubmit={this.handleSubmit}>
                     <FormItem label="用户类型">
                         {getFieldDecorator('userType', {
+                            // initialValue: 0,
                             rules: [
                                 {
                                     required: true,
@@ -222,7 +248,13 @@ class Register extends Component {
                                 },
                             ],
                         })(
-                            <Input size="large" placeholder={formatMessage({id: 'form.email.placeholder'})}/>
+                            <Select
+                                getPopupContainer={triggerNode => triggerNode.parentNode}
+                            >
+                                {
+                                    this.renderSelect(userTypeSelect)
+                                }
+                            </Select>
                         )}
                     </FormItem>
                     <FormItem label="县市区">
@@ -238,7 +270,13 @@ class Register extends Component {
                                 },
                             ],
                         })(
-                            <Input size="large" placeholder={formatMessage({id: 'form.email.placeholder'})}/>
+                            <Select
+                                getPopupContainer={triggerNode => triggerNode.parentNode}
+                            >
+                                {
+                                    this.renderSelect(citySelect)
+                                }
+                            </Select>
                         )}
                     </FormItem>
                     <FormItem label="行业">
@@ -254,7 +292,13 @@ class Register extends Component {
                                 },
                             ],
                         })(
-                            <Input size="large" placeholder={formatMessage({id: 'form.email.placeholder'})}/>
+                            <Select
+                                getPopupContainer={triggerNode => triggerNode.parentNode}
+                            >
+                                {
+                                    this.renderSelect(citySelect)
+                                }
+                            </Select>
                         )}
                     </FormItem>
                     <FormItem label="企业名称">
@@ -262,15 +306,11 @@ class Register extends Component {
                             rules: [
                                 {
                                     required: true,
-                                    message: formatMessage({id: 'validation.email.required'}),
-                                },
-                                {
-                                    type: 'email',
-                                    message: formatMessage({id: 'validation.email.wrong-format'}),
+                                    message: "请输入企业名称",
                                 },
                             ],
                         })(
-                            <Input size="large" placeholder={formatMessage({id: 'form.email.placeholder'})}/>
+                            <Input size="large" placeholder={"请输入企业名称"}/>
                         )}
                     </FormItem>
                     {/*<FormItem>
