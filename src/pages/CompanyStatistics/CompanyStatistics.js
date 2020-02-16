@@ -442,6 +442,58 @@ class CompanyStatistics extends PureComponent {
         });
     };
 
+    //每日上报reportInfo
+    reportInfo = (e, key) => {
+        /*router.push({
+            pathname: '/checkRecord/showDetail',
+            params: {
+                isRouterPush: true,
+                data: key
+            },
+        });*/
+    };
+    //查看详情
+    showDetail = (e, key) => {
+        router.push({
+            pathname: '/companyStatistics/showDetail',
+            params: {
+                isRouterPush: true,
+                data: key
+            },
+        });
+    };
+    //同步更新
+    updateData = (e, key) => {
+        /*router.push({
+            pathname: '/checkRecord/showDetail',
+            params: {
+                isRouterPush: true,
+                data: key
+            },
+        });*/
+    };
+    //编辑
+    editDetail = (e, key) => {
+        /*router.push({
+            pathname: '/checkRecord/showDetail',
+            params: {
+                isRouterPush: true,
+                data: key
+            },
+        });*/
+    };
+    //删除
+    deleteData = (e, key) => {
+        /*router.push({
+            pathname: '/checkRecord/showDetail',
+            params: {
+                isRouterPush: true,
+                data: key
+            },
+        });*/
+    };
+
+
     render() {
         const {
             fetchTreeStatus,
@@ -466,65 +518,25 @@ class CompanyStatistics extends PureComponent {
                 title: '序号',
                 dataIndex: 'key',
                 key: 'key',
-                // width: '5%',
+                width: '5%',
             },
             {
-                title: '企业名称',
+                title: '今日上岗人数',
                 dataIndex: 'areaName',
                 // width: '8%',
             },
             {
-                title: '法人代表',
+                title: '口罩库存（个）',
                 dataIndex: 'industryName',
                 // width: '8%',
             },
             {
-                title: '填报人',
+                title: '消毒液库存',
                 dataIndex: 'companyName',
                 // width: '8%',
             },
             {
-                title: '联系电话',
-                dataIndex: 'memberNum',
-                // width: '8%',
-            },
-            {
-                title: '职工人数',
-                dataIndex: 'backNum',
-                // width: '8%',
-            },
-            {
-                title: '今日上岗人数',
-                dataIndex: 'touchSuspectNum',
-                // width: '12%',
-            },
-            {
-                title: '口罩库存（个）',
-                dataIndex: 'touchIntimateNum',
-                // width: '12%',
-            },
-            {
-                title: '消毒液库存（公斤）',
-                dataIndex: 'touchInfectorNum',
-                // width: '12%',
-            },
-            {
-                title: '今日是否对厂区进行了两次消毒',
-                dataIndex: 'bodyAbnormalNum3',
-                // width: '8%',
-            },
-            {
-                title: '今日是否落实食堂防疫措施',
-                dataIndex: 'bodyAbnormalNum4',
-                // width: '8%',
-            },
-            {
-                title: '今日是否落实宿舍（出租房、工棚）防疫措施',
-                dataIndex: 'bodyAbnormalNum5',
-                width: '8%',
-            },
-            {
-                title: '1月30日之后抵烟人员',
+                title: '2月2日之后抵烟人员',
                 dataIndex: 'bodyAbnormalNum6',
                 // width: '8%',
             },
@@ -549,10 +561,29 @@ class CompanyStatistics extends PureComponent {
                 // width: '8%',
             },
             {
-                title: '对发现的重点人群采取的措施（具体到什么人，什么情况，采取了什么措施）',
+                title: '填报时间',
                 dataIndex: 'bodyAbnormalNum11',
                 // width: '8%',
             },
+            {
+                title: '操作',
+                key: 'action',
+                // width: '15%',
+                render: (text, record) => {
+                    return (
+                        <span>
+                            <a onClick={e => this.showDetail(e, record)}>查看详情</a>
+                            <Divider type="vertical" />
+                            <a onClick={e => this.updateData(e, record)}>同步更新</a>
+                            <Divider type="vertical" />
+                            <a onClick={e => this.editDetail(e, record)}>编辑</a>
+                            <Divider type="vertical" />
+                            <a onClick={e => this.deleteData(e, record)}>删除</a>
+
+                        </span>
+                    );
+                },
+            }
         ];
         const rowSelection = {
             //多选所选择的key值
@@ -577,11 +608,11 @@ class CompanyStatistics extends PureComponent {
         let apiHref = window.ENV.apiDomain + "/stat/export-stat-info?userId=" + loginInfo.data.user.id+"&areaId=" + sendParams.areaId + "&industryId=" + sendParams.industryId + "&companyId=" + sendParams.companyId  + "&startDay=" + formStart + "&endDay=" + formEnd;
         return (
             <PageHeaderWrapper
-                title="行业健康信息填报统计"
+                title="企业信息填报管理"
                 isSpecialBreadcrumb={true}
             >
                 <Row gutter={24}>
-                    <Col xl={6} lg={6} md={6} sm={24} xs={24}>
+                    {/*<Col xl={6} lg={6} md={6} sm={24} xs={24}>
                         <Card
                             title="资源列表"
                             bordered={false}
@@ -605,8 +636,8 @@ class CompanyStatistics extends PureComponent {
                                     </DirectoryTree>
                             }
                         </Card>
-                    </Col>
-                    <Col xl={18} lg={18} md={18} sm={24} xs={24} className={styles.dataSourceTableList}>
+                    </Col>*/}
+                    <Col xl={24} lg={24} md={24} sm={24} xs={24} className={styles.dataSourceTableList}>
                         <Form layout="inline" onSubmit={this.searchDataSource}>
                             <Row className={`${styles.dataSourceTitle} ${styles.tableListForms}`}
                                  style={{marginBottom: 10}}>
@@ -645,7 +676,7 @@ class CompanyStatistics extends PureComponent {
                                         )}
                                     </Form.Item>
                                 </Col>
-                                <Col xl={6} lg={8} md={8} sm={8} xs={24} style={{textAlign: 'left'}}>
+                                <Col xl={8} lg={8} md={8} sm={8} xs={24} style={{textAlign: 'left'}}>
                                     <Form.Item className={styles.searchBtnWrapper}>
                                         <Button htmlType="submit" style={{marginRight: 10}}>
                                             查询
@@ -653,9 +684,12 @@ class CompanyStatistics extends PureComponent {
                                         <Button onClick={this.resetDataSource} type="primary" style={{marginRight: 10}}>
                                             重置
                                         </Button>
-                                        <Button type="primary">
-                                            <a href={apiHref} target="_blank" >导出</a>
+                                        <Button onClick={this.reportInfo} type="primary" style={{marginRight: 10}}>
+                                            每日上报
                                         </Button>
+                                        {/*<Button type="primary">
+                                            <a href={apiHref} target="_blank" >导出</a>
+                                        </Button>*/}
                                     </Form.Item>
                                 </Col>
                             </Row>

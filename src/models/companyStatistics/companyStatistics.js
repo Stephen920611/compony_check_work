@@ -10,6 +10,7 @@ import {
     // fetchJobStatisticsList,
     // fetchStatInfo,
     fetchCompanyStatistics,
+    fetchCompanyDetailById,
 } from '@/services/companyStatistics/companyStatistics';
 import T from '../../utils/T';
 
@@ -40,6 +41,15 @@ export default {
         * fetchCompanyStatisticsAction({params, resolve, reject}, {call, put}) {
             try {
                 const response = yield call(fetchCompanyStatistics, params);
+                resolve(response);
+            } catch (error) {
+                reject(error);
+            }
+        },
+        //查看详情页面
+        * fetchCompanyDetailByIdAction({params, resolve, reject}, {call, put}) {
+            try {
+                const response = yield call(fetchCompanyDetailById, params);
                 resolve(response);
             } catch (error) {
                 reject(error);

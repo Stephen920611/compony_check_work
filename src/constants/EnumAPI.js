@@ -73,6 +73,7 @@ const EnumAPI = {
   */
     // exportStatInfo: _processAPI('/stat/export-stat-info'), //GET 导出统计信息根据公司id
     fetchCompanyStatistics: _processAPI('/stat/list-data'), //统计查询
+    fetchCompanyDetailById: _processAPI('/stat/list-data'), //查看详情
 
 
     /*
