@@ -36,6 +36,7 @@ const FormItem = Form.Item;
 const {TextArea} = Input;
 const {Option} = Select;
 const {Panel} = Collapse;
+const { Column, ColumnGroup } = Table;
 
 import styles from './TotalStatistics.less';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper'; // @ 表示相对于源文件根目录
@@ -58,129 +59,6 @@ class TotalStatistics extends PureComponent {
         selectedArea: '烟台市',//树节点默认选中的地区名字，用来后台获取参数
         clickTree: [],  //点击的当前树
         tableData: [],  //表格数据
-        treeData: [
-            {
-                children: [
-                    {
-                        id: "GA001",
-                        key: "GA001",
-                        name: "芝罘区",
-                        pId: "GA",
-                        title: "芝罘区",
-                    },
-                    {
-                        id: "GA002",
-                        key: "GA002",
-                        name: "福山区",
-                        pId: "GA",
-                        title: "福山区",
-                    },
-                    {
-                        id: "GA003",
-                        key: "GA003",
-                        name: "莱山区",
-                        pId: "GA",
-                        title: "莱山区",
-                    },
-                    {
-                        id: "GA004",
-                        key: "GA004",
-                        name: "牟平区",
-                        pId: "GA",
-                        title: "牟平区",
-                    },
-                    {
-                        id: "GA005",
-                        key: "GA005",
-                        name: "海阳市",
-                        pId: "GA",
-                        title: "海阳市",
-                    },
-                    {
-                        id: "GA006",
-                        key: "GA006",
-                        name: "莱阳市",
-                        pId: "GA",
-                        title: "莱阳市",
-                    },
-                    {
-                        id: "GA007",
-                        key: "GA007",
-                        name: "栖霞市",
-                        pId: "GA",
-                        title: "栖霞市",
-                    },
-                    {
-                        id: "GA008",
-                        key: "GA008",
-                        name: "蓬莱市",
-                        pId: "GA",
-                        title: "蓬莱市",
-                    },
-                    {
-                        id: "GA009",
-                        key: "GA009",
-                        name: "长岛县",
-                        pId: "GA",
-                        title: "长岛县",
-                    },
-                    {
-                        id: "GA010",
-                        key: "GA010",
-                        name: "龙口市",
-                        pId: "GA",
-                        title: "龙口市",
-                    },
-                    {
-                        id: "GA011",
-                        key: "GA011",
-                        name: "招远市",
-                        pId: "GA",
-                        title: "招远市",
-                    },
-                    {
-                        id: "GA012",
-                        key: "GA012",
-                        name: "莱州市",
-                        pId: "GA",
-                        title: "莱州市",
-                    },
-                    {
-                        id: "GA013",
-                        key: "GA013",
-                        name: "开发区",
-                        pId: "GA",
-                        title: "开发区",
-                    },
-                    {
-                        id: "GA014",
-                        key: "GA014",
-                        name: "高新区",
-                        pId: "GA",
-                        title: "高新区",
-                    },
-                    {
-                        id: "GA015",
-                        key: "GA015",
-                        name: "保税港区",
-                        pId: "GA",
-                        title: "保税港区",
-                    },
-                    {
-                        id: "GA016",
-                        key: "GA016",
-                        name: "昆嵛山保护区",
-                        pId: "GA",
-                        title: "昆嵛山保护区",
-                    },
-                ],
-                id: "GA",
-                key: "GA",
-                name: "烟台市",
-                pId: "0",
-                title: "烟台市",
-            }
-        ],
         treeNewData: [],
         autoExpandParent: true,     //是否自动展开
         sendParams:{},
@@ -450,7 +328,6 @@ class TotalStatistics extends PureComponent {
             form: {getFieldDecorator, getFieldValue, getFieldsValue},
         } = this.props;
         const {
-            treeData,
             treeNewData,
             currentPage,
             selectedKey,
@@ -495,45 +372,55 @@ class TotalStatistics extends PureComponent {
                 // width: '12%',
             },
             {
-                title: '1月30日之后抵烟人员',
-                dataIndex: 'touchIntimateNum',
-                // colSpan:4,
-                // width: '12%',
+                title: '本次摸排中累计发现',
+                children: [
+                    {
+                        title: '1月30日之后抵烟人员',
+                        dataIndex: 'touchIntimateNum',
+                        // colSpan:4,
+                        // width: '12%',
+                    },
+                    {
+                        title: '与确诊、疑似病例有过密切接触的人数',
+                        dataIndex: 'touchInfectorNum',
+                        // width: '12%',
+                    },
+                    {
+                        title: '与密切接触者有过共同生活、工作、学习、聚会的人数',
+                        dataIndex: 'bodyAbnormalNum3',
+                        // width: '8%',
+                    },
+                    {
+                        title: '与重点疫区人员有过接触的人数',
+                        dataIndex: 'bodyAbnormalNum4',
+                        // width: '8%',
+                    },
+                    {
+                        title: '身体状况异常的人数',
+                        dataIndex: 'bodyAbnormalNum5',
+                        // width: '8%',
+                    },
+                ],
             },
             {
-                title: '与确诊、疑似病例有过密切接触的人数',
-                dataIndex: 'touchInfectorNum',
-                // width: '12%',
-            },
-            {
-                title: '与密切接触者有过共同生活、工作、学习、聚会的人数',
-                dataIndex: 'bodyAbnormalNum3',
-                // width: '8%',
-            },
-            {
-                title: '与重点疫区人员有过接触的人数',
-                dataIndex: 'bodyAbnormalNum4',
-                // width: '8%',
-            },
-            {
-                title: '身体状况异常的人数',
-                dataIndex: 'bodyAbnormalNum5',
-                // width: '8%',
-            },
-            {
-                title: '居家隔离人数',
-                dataIndex: 'bodyAbnormalNum6',
-                // width: '8%',
-            },
-            {
-                title: '集中隔离人数',
-                dataIndex: 'bodyAbnormalNum7',
-                // width: '8%',
-            },
-            {
-                title: '送医人数',
-                dataIndex: 'bodyAbnormalNum8',
-                // width: '8%',
+                title: '本次摸排中累计',
+                children: [
+                    {
+                        title: '居家隔离人数',
+                        dataIndex: 'bodyAbnormalNum6',
+                        // width: '8%',
+                    },
+                    {
+                        title: '集中隔离人数',
+                        dataIndex: 'bodyAbnormalNum7',
+                        // width: '8%',
+                    },
+                    {
+                        title: '送医人数',
+                        dataIndex: 'bodyAbnormalNum8',
+                        // width: '8%',
+                    },
+                ],
             },
         ];
         const rowSelection = {
@@ -657,11 +544,13 @@ class TotalStatistics extends PureComponent {
                                     dataSource={tableData}
                                     // rowSelection={rowSelection}
                                     pagination={false}
-                                    // bordered = {true}
+                                    bordered
                                     scroll={{ y: 480 }}
                                     title={() => '第四轮大摸排情况统计表（截止' + deadline + '）'}
                                     // rowClassName={record => (record.editable ? styles.editable : '')}
-                                />
+                                >
+
+                                </Table>
                             </Card>
                         </Row>
 

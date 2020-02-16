@@ -666,7 +666,9 @@ class CompanyStatistics extends PureComponent {
                             统计结果
                         </Row>
                         <Row>
-                            <Card bordered={false}>
+                            <Card bordered={false}
+                                  className={styles.tableContainer}
+                            >
                                 <Table
                                     loading={fetchStatInfoStatus}
                                     columns={columns}
