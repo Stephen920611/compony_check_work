@@ -73,6 +73,11 @@ export default [
                 component: './CompanyStatistics/CompanyStatisticsDetail',
                 authority: ['admin']
             },
+            {
+                path: '/companyStatistics/editDetail',
+                component: './CompanyStatistics/CompanyStatisticsEdit',
+                authority: ['admin']
+            },
             /*----------------- 企业信息填报统计 -------------------*/
             {
                 path: '/totalStatistics',

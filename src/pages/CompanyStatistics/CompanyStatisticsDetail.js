@@ -76,7 +76,7 @@ class CompanyStatisticsDetail extends PureComponent {
         } = this.state;
         const breadcrumbDetail = [
             {
-                linkTo: '/checkRecord',
+                linkTo: '/companyStatistics',
                 name: '企业信息填报管理',
             },
             {

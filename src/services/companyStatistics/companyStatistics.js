@@ -12,9 +12,24 @@ import T from './../../utils/T';
 export async function fetchCompanyStatistics(params = {}) {
     return post(EnumAPI.fetchCompanyStatistics, params);
 }
+
+//删除企业填报
+export async function deleteCompanyInfo(id) {
+    return del(EnumAPI.deleteCompanyInfo(id));
+}
+//同步
+export async function updateCompanyInfo(id) {
+    return del(EnumAPI.updateCompanyInfo,id);
+}
+
 //获取详情接口fetchCompanyDetailById
 export async function fetchCompanyDetailById(params = {}) {
     return post(EnumAPI.fetchCompanyDetailById, params);
+}
+
+//获取重点人员统计数据
+export async function fetchCompanyPersonNumber(params = {}) {
+    return post(EnumAPI.fetchCompanyPersonNumber, params);
 }
 
 //获取树接口

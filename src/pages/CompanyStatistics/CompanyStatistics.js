@@ -444,13 +444,14 @@ class CompanyStatistics extends PureComponent {
 
     //每日上报reportInfo
     reportInfo = (e, key) => {
-        /*router.push({
-            pathname: '/checkRecord/showDetail',
+        router.push({
+            pathname: '/companyStatistics/editDetail',
             params: {
                 isRouterPush: true,
-                data: key
+                data: key,
+                status:true
             },
-        });*/
+        });
     };
     //查看详情
     showDetail = (e, key) => {
@@ -464,33 +465,61 @@ class CompanyStatistics extends PureComponent {
     };
     //同步更新
     updateData = (e, key) => {
-        /*router.push({
-            pathname: '/checkRecord/showDetail',
-            params: {
-                isRouterPush: true,
-                data: key
-            },
-        });*/
+        const {dispatch} = this.props;
+        const {tableData} = this.state;
+        let self = this;
+        /*new Promise((resolve, reject) => {
+           dispatch({
+               type: 'companyStatistics/updateCompanyInfoAction',
+               id:key.id,
+               resolve,
+               reject,
+           });
+       }).then(response => {
+           if (response.code === 0) {
+               tableData.map((item)=>{
+                  if(item.id===key.id) {
+                      item = response.data
+                  }
+               })
+
+           } else {
+               T.prompt.error(response.msg);
+           }
+       });*/
     };
     //编辑
     editDetail = (e, key) => {
-        /*router.push({
-            pathname: '/checkRecord/showDetail',
+        router.push({
+            pathname: '/companyStatistics/editDetail',
             params: {
                 isRouterPush: true,
-                data: key
+                data: key,
+                status:false
             },
-        });*/
+        });
     };
     //删除
     deleteData = (e, key) => {
-        /*router.push({
-            pathname: '/checkRecord/showDetail',
-            params: {
-                isRouterPush: true,
-                data: key
-            },
-        });*/
+        const {dispatch} = this.props;
+        let self = this;
+        //删除
+        /*new Promise((resolve, reject) => {
+           dispatch({
+               type: 'companyStatistics/deleteCompanyInfoAction',
+               id:key.id,
+               resolve,
+               reject,
+           });
+       }).then(response => {
+           if (response.code === 0) {
+               T.prompt.success('删除成功！');
+               self.fetchDataList();
+
+           } else {
+               T.prompt.error(response.msg);
+           }
+       });*/
     };
 
 

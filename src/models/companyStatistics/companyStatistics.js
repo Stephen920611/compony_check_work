@@ -11,6 +11,9 @@ import {
     // fetchStatInfo,
     fetchCompanyStatistics,
     fetchCompanyDetailById,
+    fetchCompanyPersonNumber,
+    deleteCompanyInfo,
+    updateCompanyInfo,
 } from '@/services/companyStatistics/companyStatistics';
 import T from '../../utils/T';
 
@@ -46,10 +49,39 @@ export default {
                 reject(error);
             }
         },
+        //删除企业填报
+        * deleteCompanyInfoAction({id, resolve, reject}, {call, put}) {
+            try {
+                const response = yield call(deleteCompanyInfo, id);
+                resolve(response);
+            } catch (error) {
+                reject(error);
+            }
+        },
+
+        //删除企业填报
+        * updateCompanyInfoAction({id, resolve, reject}, {call, put}) {
+            try {
+                const response = yield call(updateCompanyInfo, id);
+                resolve(response);
+            } catch (error) {
+                reject(error);
+            }
+        },
         //查看详情页面
         * fetchCompanyDetailByIdAction({params, resolve, reject}, {call, put}) {
             try {
                 const response = yield call(fetchCompanyDetailById, params);
+                resolve(response);
+            } catch (error) {
+                reject(error);
+            }
+        },
+
+        //获取重点人员统计
+        * fetchCompanyPersonNumberAction({params, resolve, reject}, {call, put}) {
+            try {
+                const response = yield call(fetchCompanyPersonNumber, params);
                 resolve(response);
             } catch (error) {
                 reject(error);
