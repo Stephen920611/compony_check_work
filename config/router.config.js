@@ -89,7 +89,12 @@ export default [
                 path: '/industrialManage',
                 name: 'industrialManage',
                 icon: 'home',
-                component: './TotalStatistics/TotalStatistics',
+                component: './IndustrialManage/IndustrialManage',
+                authority: ['admin']
+            },
+            {
+                path: '/industrialManage/showDetail',
+                component: './IndustrialManage/IndustrialManageDetail',
                 authority: ['admin']
             },
 

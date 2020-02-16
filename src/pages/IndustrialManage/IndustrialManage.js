@@ -41,10 +41,10 @@ import styles from './IndustrialManage.less';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper'; // @ 表示相对于源文件根目录
 
 /* eslint react/no-multi-comp:0 */
-@connect(({jobStatistics, loading}) => ({
-    jobStatistics,
-    fetchStatInfoStatus: loading.effects['jobStatistics/fetchStatInfoAction'],
-    fetchTreeStatus: loading.effects['jobStatistics/fetchTreeNodeAction'],
+@connect(({industrialManage, loading}) => ({
+    industrialManage,
+    fetchStatInfoStatus: loading.effects['industrialManage/fetchIndustrialManageAction'],
+    fetchTreeStatus: loading.effects['industrialManage/fetchTreeNodeAction'],
 }))
 // class IndustrialManage
 @Form.create()
@@ -58,129 +58,6 @@ class IndustrialManage extends PureComponent {
         selectedArea: '烟台市',//树节点默认选中的地区名字，用来后台获取参数
         clickTree: [],  //点击的当前树
         tableData: [],  //表格数据
-        treeData: [
-            {
-                children: [
-                    {
-                        id: "GA001",
-                        key: "GA001",
-                        name: "芝罘区",
-                        pId: "GA",
-                        title: "芝罘区",
-                    },
-                    {
-                        id: "GA002",
-                        key: "GA002",
-                        name: "福山区",
-                        pId: "GA",
-                        title: "福山区",
-                    },
-                    {
-                        id: "GA003",
-                        key: "GA003",
-                        name: "莱山区",
-                        pId: "GA",
-                        title: "莱山区",
-                    },
-                    {
-                        id: "GA004",
-                        key: "GA004",
-                        name: "牟平区",
-                        pId: "GA",
-                        title: "牟平区",
-                    },
-                    {
-                        id: "GA005",
-                        key: "GA005",
-                        name: "海阳市",
-                        pId: "GA",
-                        title: "海阳市",
-                    },
-                    {
-                        id: "GA006",
-                        key: "GA006",
-                        name: "莱阳市",
-                        pId: "GA",
-                        title: "莱阳市",
-                    },
-                    {
-                        id: "GA007",
-                        key: "GA007",
-                        name: "栖霞市",
-                        pId: "GA",
-                        title: "栖霞市",
-                    },
-                    {
-                        id: "GA008",
-                        key: "GA008",
-                        name: "蓬莱市",
-                        pId: "GA",
-                        title: "蓬莱市",
-                    },
-                    {
-                        id: "GA009",
-                        key: "GA009",
-                        name: "长岛县",
-                        pId: "GA",
-                        title: "长岛县",
-                    },
-                    {
-                        id: "GA010",
-                        key: "GA010",
-                        name: "龙口市",
-                        pId: "GA",
-                        title: "龙口市",
-                    },
-                    {
-                        id: "GA011",
-                        key: "GA011",
-                        name: "招远市",
-                        pId: "GA",
-                        title: "招远市",
-                    },
-                    {
-                        id: "GA012",
-                        key: "GA012",
-                        name: "莱州市",
-                        pId: "GA",
-                        title: "莱州市",
-                    },
-                    {
-                        id: "GA013",
-                        key: "GA013",
-                        name: "开发区",
-                        pId: "GA",
-                        title: "开发区",
-                    },
-                    {
-                        id: "GA014",
-                        key: "GA014",
-                        name: "高新区",
-                        pId: "GA",
-                        title: "高新区",
-                    },
-                    {
-                        id: "GA015",
-                        key: "GA015",
-                        name: "保税港区",
-                        pId: "GA",
-                        title: "保税港区",
-                    },
-                    {
-                        id: "GA016",
-                        key: "GA016",
-                        name: "昆嵛山保护区",
-                        pId: "GA",
-                        title: "昆嵛山保护区",
-                    },
-                ],
-                id: "GA",
-                key: "GA",
-                name: "烟台市",
-                pId: "0",
-                title: "烟台市",
-            }
-        ],
         treeNewData: [],
         autoExpandParent: true,     //是否自动展开
         sendParams:{}
@@ -199,7 +76,7 @@ class IndustrialManage extends PureComponent {
         const {dispatch} = this.props;
         new Promise((resolve, reject) => {
             dispatch({
-                type: 'jobStatistics/fetchTreeNodeAction',
+                type: 'industrialManage/fetchTreeNodeAction',
                 userId: loginInfo.data.user.id,
                 resolve,
                 reject,
@@ -238,6 +115,7 @@ class IndustrialManage extends PureComponent {
                     companyId: eventData.type === 'company' ? eventData.backId : '',
                     startDay: T.lodash.isUndefined(values.startDate) ? '' : values.startDate === null ?  '' : T.helper.dateFormat(values.startDate,'YYYY-MM-DD'),      //开始时间
                     endDay: T.lodash.isUndefined(values.endDate) ? '' : values.endDate === null ?  '' : T.helper.dateFormat(values.endDate,'YYYY-MM-DD'),      //开始时间
+                    // companyName:T.lodash.isUndefined(values.endDate) ? '' : values.companyName
                 };
                 // console.log(params,'params');
                 this.setState({
@@ -245,7 +123,7 @@ class IndustrialManage extends PureComponent {
                 });
                 new Promise((resolve, reject) => {
                     dispatch({
-                        type: 'jobStatistics/fetchStatInfoAction',
+                        type: 'industrialManage/fetchIndustrialManageAction',
                         params,
                         resolve,
                         reject,
@@ -429,6 +307,7 @@ class IndustrialManage extends PureComponent {
         });
     };
 
+
     /**
      * 展开树操作
      * @param {array} expandedKeys
@@ -440,6 +319,36 @@ class IndustrialManage extends PureComponent {
         this.setState({
             expandTreeKey: expandedKeys
         });
+    };
+    //查看详情
+    showDetail = (e, key) => {
+        router.push({
+            pathname: '/industrialManage/showDetail',
+            params: {
+                isRouterPush: true,
+                data: key
+            },
+        });
+    };
+    //基本信息编辑
+    editDetail = (e, key) => {
+        /*router.push({
+            pathname: '/checkRecord/showDetail',
+            params: {
+                isRouterPush: true,
+                data: key
+            },
+        });*/
+    };
+    //基本信息编辑
+    showHistory = (e, key) => {
+        /*router.push({
+            pathname: '/checkRecord/showDetail',
+            params: {
+                isRouterPush: true,
+                data: key
+            },
+        });*/
     };
 
     render() {
@@ -463,75 +372,53 @@ class IndustrialManage extends PureComponent {
 
         const columns = [
             {
+                title: '序号',
+                dataIndex: 'key',
+                key: 'key',
+                // width: '5%',
+            },
+            {
                 title: '县市区',
                 dataIndex: 'areaName',
-                width: '8%',
+                // width: '8%',
             },
             {
-                title: '开复工企业(项目)数量',
+                title: '企业名称',
                 dataIndex: 'industryName',
-                width: '8%',
+                // width: '8%',
             },
             {
-                title: '完成摸排企业(项目)数量',
+                title: '注册地址',
                 dataIndex: 'companyName',
-                width: '8%',
+                // width: '8%',
             },
             {
-                title: '符合开复工条件企业(项目)数量',
+                title: '联系方式',
                 dataIndex: 'memberNum',
-                width: '8%',
+                // width: '8%',
             },
             {
-                title: '复工人数',
+                title: '开工时间',
                 dataIndex: 'backNum',
-                width: '8%',
+                // width: '8%',
             },
             {
-                title: '完成摸排人数',
-                dataIndex: 'touchSuspectNum',
-                width: '12%',
-            },
-            {
-                title: '1月30日之后抵烟人员',
-                dataIndex: 'touchIntimateNum',
-                width: '12%',
-            },
-            {
-                title: '与确诊、疑似病例有过密切接触的人数',
-                dataIndex: 'touchInfectorNum',
-                width: '12%',
-            },
-            {
-                title: '与密切接触者有过共同生活、工作、学习、聚会的人数',
-                dataIndex: 'bodyAbnormalNum3',
-                width: '8%',
-            },
-            {
-                title: '与重点疫区人员有过接触的人数',
-                dataIndex: 'bodyAbnormalNum4',
-                width: '8%',
-            },
-            {
-                title: '身体状况异常的人数',
-                dataIndex: 'bodyAbnormalNum5',
-                width: '8%',
-            },
-            {
-                title: '居家隔离人数',
-                dataIndex: 'bodyAbnormalNum6',
-                width: '8%',
-            },
-            {
-                title: '集中隔离人数',
-                dataIndex: 'bodyAbnormalNum7',
-                width: '8%',
-            },
-            {
-                title: '送医人数',
-                dataIndex: 'bodyAbnormalNum8',
-                width: '8%',
-            },
+                title: '操作',
+                key: 'action',
+                // width: '15%',
+                render: (text, record) => {
+                    return (
+                        <span>
+                            <a onClick={e => this.showDetail(e, record)}>查看详情</a>
+                            <Divider type="vertical" />
+                            <a onClick={e => this.editDetail(e, record)}>基本信息编辑</a>
+                            <Divider type="vertical" />
+                            <a onClick={e => this.showHistory(e, record)}>填报历史</a>
+
+                        </span>
+                    );
+                },
+            }
         ];
         const rowSelection = {
             //多选所选择的key值
@@ -624,6 +511,18 @@ class IndustrialManage extends PureComponent {
                                         )}
                                     </Form.Item>
                                 </Col>
+                                <Col xl={6} lg={6} md={6} sm={6} xs={24}>
+                                    <Form.Item
+                                        label='企业名称：'
+                                    >
+                                        {getFieldDecorator('companyName', {})(
+                                            <Input
+                                                autoComplete="off"
+                                                placeholder='请输入企业名称'
+                                            />
+                                        )}
+                                    </Form.Item>
+                                </Col>
                                 <Col xl={6} lg={8} md={8} sm={8} xs={24} style={{textAlign: 'left'}}>
                                     <Form.Item className={styles.searchBtnWrapper}>
                                         <Button htmlType="submit" style={{marginRight: 10}}>
@@ -632,9 +531,9 @@ class IndustrialManage extends PureComponent {
                                         <Button onClick={this.resetDataSource} type="primary" style={{marginRight: 10}}>
                                             重置
                                         </Button>
-                                        <Button type="primary">
+                                        {/*<Button type="primary">
                                             <a href={apiHref} target="_blank" >导出</a>
-                                        </Button>
+                                        </Button>*/}
                                     </Form.Item>
                                 </Col>
                             </Row>

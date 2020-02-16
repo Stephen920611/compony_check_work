@@ -75,6 +75,22 @@ const EnumAPI = {
     fetchCompanyStatistics: _processAPI('/stat/list-data'), //统计查询
 
 
+    /*
+     |----------------------------------------------------------------
+     | 连-h5-工业企业管理-相关的API地址
+     |----------------------------------------------------------------
+    */
+    // exportStatInfo: _processAPI('/stat/export-stat-info'), //GET 导出统计信息根据公司id
+    fetchIndustrialManage: _processAPI('/stat/list-data'), //统计查询
+    fetchIndustrialDetailById:_processAPI('/member/get/detail'), //根据id查询详情
+
+
+
+
+
+
+
+
 
 
     /*
