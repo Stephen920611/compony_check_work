@@ -60,7 +60,7 @@ export default [
                 component: './CheckRecord/CheckRecordDetail',
                 authority: ['admin']
             },
-
+            /*----------------- 企业信息填报查询类列表页 -------------------*/
             {
                 path: '/companyStatistics',
                 name: 'companyStatistics',
@@ -68,6 +68,7 @@ export default [
                 component: './CompanyStatistics/CompanyStatistics',
                 authority: ['admin']
             },
+            /*----------------- 企业信息填报统计 -------------------*/
             {
                 path: '/totalStatistics',
                 name: 'totalStatistics',
@@ -75,6 +76,30 @@ export default [
                 component: './TotalStatistics/TotalStatistics',
                 authority: ['admin']
             },
+            /*----------------- 工业企业填报 -------------------*/
+            {
+                path: '/industrialReport',
+                name: 'industrialReport',
+                icon: 'home',
+                component: './IndustrialReport/IndustrialReport',
+                authority: ['admin']
+            },
+            /*----------------- 工业企业管理 -------------------*/
+            {
+                path: '/industrialManage',
+                name: 'industrialManage',
+                icon: 'home',
+                component: './TotalStatistics/TotalStatistics',
+                authority: ['admin']
+            },
+
+
+
+
+
+
+
+
             /*----------------- 摸排记录查询 -------------------*/
             /*{
                 path: '/addInfo',

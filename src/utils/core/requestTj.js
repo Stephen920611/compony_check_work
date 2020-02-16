@@ -72,8 +72,12 @@ const _request = (options = {}, isLogin = false) => {
             //前端自己判断是不是登录，如果不是的话返回的参数跟登录的接口返回的参数不一致
             if (isLogin) {
                 const {data, code, msg} = resp.data;
-                resolve({data, token: data.token, code, msg});
-                store.setStorage("__token__", data.token, data.expire);
+                //token容错
+                let backToken = !T.lodash.isUndefined(data) ? data.hasOwnProperty('token') ? data.token :'' : '';
+                //Expire容错
+                let backExpire = !T.lodash.isUndefined(data) ? data.hasOwnProperty('expire') ? data.expire : 0 : 0;
+                resolve({data, token: backToken, code, msg});
+                store.setStorage("__token__", backToken, backExpire);
             } else {
                 const {data, code, msg} = resp.data;
                 // 判断是否登录
