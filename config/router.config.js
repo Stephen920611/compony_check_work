@@ -47,7 +47,6 @@ export default [
                 component: './CheckRecord/CheckRecordDetail',
                 authority: ['admin']
             },*/
-
             /*----------------- 行业健康信息填报查询 -------------------*/
             {
                 path: '/checkRecord',
@@ -59,6 +58,21 @@ export default [
             {
                 path: '/checkRecord/showDetail',
                 component: './CheckRecord/CheckRecordDetail',
+                authority: ['admin']
+            },
+
+            {
+                path: '/companyStatistics',
+                name: 'companyStatistics',
+                icon: 'home',
+                component: './CompanyStatistics/CompanyStatistics',
+                authority: ['admin']
+            },
+            {
+                path: '/totalStatistics',
+                name: 'totalStatistics',
+                icon: 'home',
+                component: './TotalStatistics/TotalStatistics',
                 authority: ['admin']
             },
             /*----------------- 摸排记录查询 -------------------*/

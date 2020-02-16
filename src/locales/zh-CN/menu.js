@@ -7,6 +7,8 @@ export default {
     'menu.touchStatisticsPage': '摸排统计页面',
     'menu.checkRecord': '行业健康信息填报查询',
     'menu.jobStatistics': '行业健康信息填报统计',
+    'menu.totalStatistics': '全部信息统计',
+    'menu.companyStatistics': '企业信息填报统计',
     'menu.addInfo': '信息管理',
     'menu.metadataManage': '元数据管理',
     'menu.metadataManage.dataSourceManagement': '数据源管理',
