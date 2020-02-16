@@ -41,10 +41,10 @@ import styles from './CompanyStatistics.less';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper'; // @ 表示相对于源文件根目录
 
 /* eslint react/no-multi-comp:0 */
-@connect(({jobStatistics, loading}) => ({
-    jobStatistics,
-    fetchStatInfoStatus: loading.effects['jobStatistics/fetchStatInfoAction'],
-    fetchTreeStatus: loading.effects['jobStatistics/fetchTreeNodeAction'],
+@connect(({companyStatistics, loading}) => ({
+    companyStatistics,
+    fetchStatInfoStatus: loading.effects['companyStatistics/fetchStatInfoAction'],
+    fetchTreeStatus: loading.effects['companyStatistics/fetchTreeNodeAction'],
 }))
 // class CompanyStatistics
 @Form.create()
@@ -199,7 +199,7 @@ class CompanyStatistics extends PureComponent {
         const {dispatch} = this.props;
         new Promise((resolve, reject) => {
             dispatch({
-                type: 'jobStatistics/fetchTreeNodeAction',
+                type: 'companyStatistics/fetchTreeNodeAction',
                 userId: loginInfo.data.user.id,
                 resolve,
                 reject,
@@ -245,7 +245,7 @@ class CompanyStatistics extends PureComponent {
                 });
                 new Promise((resolve, reject) => {
                     dispatch({
-                        type: 'jobStatistics/fetchStatInfoAction',
+                        type: 'companyStatistics/fetchStatInfoAction',
                         params,
                         resolve,
                         reject,
@@ -466,57 +466,57 @@ class CompanyStatistics extends PureComponent {
                 title: '序号',
                 dataIndex: 'key',
                 key: 'key',
-                width: '5%',
+                // width: '5%',
             },
             {
                 title: '企业名称',
                 dataIndex: 'areaName',
-                width: '8%',
+                // width: '8%',
             },
             {
                 title: '法人代表',
                 dataIndex: 'industryName',
-                width: '8%',
+                // width: '8%',
             },
             {
                 title: '填报人',
                 dataIndex: 'companyName',
-                width: '8%',
+                // width: '8%',
             },
             {
                 title: '联系电话',
                 dataIndex: 'memberNum',
-                width: '8%',
+                // width: '8%',
             },
             {
                 title: '职工人数',
                 dataIndex: 'backNum',
-                width: '8%',
+                // width: '8%',
             },
             {
                 title: '今日上岗人数',
                 dataIndex: 'touchSuspectNum',
-                width: '12%',
+                // width: '12%',
             },
             {
                 title: '口罩库存（个）',
                 dataIndex: 'touchIntimateNum',
-                width: '12%',
+                // width: '12%',
             },
             {
                 title: '消毒液库存（公斤）',
                 dataIndex: 'touchInfectorNum',
-                width: '12%',
+                // width: '12%',
             },
             {
                 title: '今日是否对厂区进行了两次消毒',
                 dataIndex: 'bodyAbnormalNum3',
-                width: '8%',
+                // width: '8%',
             },
             {
                 title: '今日是否落实食堂防疫措施',
                 dataIndex: 'bodyAbnormalNum4',
-                width: '8%',
+                // width: '8%',
             },
             {
                 title: '今日是否落实宿舍（出租房、工棚）防疫措施',
@@ -526,32 +526,32 @@ class CompanyStatistics extends PureComponent {
             {
                 title: '1月30日之后抵烟人员',
                 dataIndex: 'bodyAbnormalNum6',
-                width: '8%',
+                // width: '8%',
             },
             {
                 title: '与确诊、疑似病例有过密切接触的人数',
                 dataIndex: 'bodyAbnormalNum7',
-                width: '8%',
+                // width: '8%',
             },
             {
                 title: '与密切接触者有过共同生活、工作、学习、聚会的人数',
                 dataIndex: 'bodyAbnormalNum8',
-                width: '8%',
+                // width: '8%',
             },
             {
                 title: '与重点疫区人员有过接触的人数',
                 dataIndex: 'bodyAbnormalNum9',
-                width: '8%',
+                // width: '8%',
             },
             {
                 title: '身体状况异常的人数',
                 dataIndex: 'bodyAbnormalNum10',
-                width: '8%',
+                // width: '8%',
             },
             {
                 title: '对发现的重点人群采取的措施（具体到什么人，什么情况，采取了什么措施）',
                 dataIndex: 'bodyAbnormalNum11',
-                width: '8%',
+                // width: '8%',
             },
         ];
         const rowSelection = {
