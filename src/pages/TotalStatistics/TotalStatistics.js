@@ -41,10 +41,10 @@ import styles from './TotalStatistics.less';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper'; // @ 表示相对于源文件根目录
 
 /* eslint react/no-multi-comp:0 */
-@connect(({jobStatistics, loading}) => ({
-    jobStatistics,
-    fetchStatInfoStatus: loading.effects['jobStatistics/fetchStatInfoAction'],
-    fetchTreeStatus: loading.effects['jobStatistics/fetchTreeNodeAction'],
+@connect(({totalStatistics, loading}) => ({
+    totalStatistics,
+    fetchStatInfoStatus: loading.effects['totalStatistics/fetchTotalStatisticsInfoAction'],
+    fetchTreeStatus: loading.effects['totalStatistics/fetchTreeNodeAction'],
 }))
 // class TotalStatistics
 @Form.create()
@@ -183,7 +183,8 @@ class TotalStatistics extends PureComponent {
         ],
         treeNewData: [],
         autoExpandParent: true,     //是否自动展开
-        sendParams:{}
+        sendParams:{},
+        deadline:'2020-02-16'
     };
 
     componentDidMount() {
@@ -199,7 +200,7 @@ class TotalStatistics extends PureComponent {
         const {dispatch} = this.props;
         new Promise((resolve, reject) => {
             dispatch({
-                type: 'jobStatistics/fetchTreeNodeAction',
+                type: 'totalStatistics/fetchTreeNodeAction',
                 userId: loginInfo.data.user.id,
                 resolve,
                 reject,
@@ -245,7 +246,7 @@ class TotalStatistics extends PureComponent {
                 });
                 new Promise((resolve, reject) => {
                     dispatch({
-                        type: 'jobStatistics/fetchStatInfoAction',
+                        type: 'totalStatistics/fetchTotalStatisticsInfoAction',
                         params,
                         resolve,
                         reject,
@@ -459,78 +460,80 @@ class TotalStatistics extends PureComponent {
             selectTreeKey,
             expandTreeKey,
             sendParams,
+            deadline,
         } = this.state;
 
         const columns = [
             {
                 title: '县市区',
                 dataIndex: 'areaName',
-                width: '8%',
+                // width: '8%',
             },
             {
                 title: '开复工企业(项目)数量',
                 dataIndex: 'industryName',
-                width: '8%',
+                // width: '8%',
             },
             {
                 title: '完成摸排企业(项目)数量',
                 dataIndex: 'companyName',
-                width: '8%',
+                // width: '8%',
             },
             {
                 title: '符合开复工条件企业(项目)数量',
                 dataIndex: 'memberNum',
-                width: '8%',
+                // width: '8%',
             },
             {
                 title: '复工人数',
                 dataIndex: 'backNum',
-                width: '8%',
+                // width: '8%',
             },
             {
                 title: '完成摸排人数',
                 dataIndex: 'touchSuspectNum',
-                width: '12%',
+                // width: '12%',
             },
             {
                 title: '1月30日之后抵烟人员',
                 dataIndex: 'touchIntimateNum',
-                width: '12%',
+                // colSpan:4,
+                // width: '12%',
             },
             {
                 title: '与确诊、疑似病例有过密切接触的人数',
                 dataIndex: 'touchInfectorNum',
-                width: '12%',
+                // width: '12%',
             },
             {
                 title: '与密切接触者有过共同生活、工作、学习、聚会的人数',
                 dataIndex: 'bodyAbnormalNum3',
-                width: '8%',
+                // width: '8%',
             },
             {
                 title: '与重点疫区人员有过接触的人数',
                 dataIndex: 'bodyAbnormalNum4',
-                width: '8%',
+                // width: '8%',
             },
             {
                 title: '身体状况异常的人数',
                 dataIndex: 'bodyAbnormalNum5',
-                width: '8%',
+                // width: '8%',
             },
             {
                 title: '居家隔离人数',
                 dataIndex: 'bodyAbnormalNum6',
-                width: '8%',
+                // width: '8%',
             },
             {
                 title: '集中隔离人数',
                 dataIndex: 'bodyAbnormalNum7',
-                width: '8%',
+                // width: '8%',
             },
             {
                 title: '送医人数',
                 dataIndex: 'bodyAbnormalNum8',
-                width: '8%',
+                // width: '8%',
             },
         ];
         const rowSelection = {
@@ -645,14 +648,18 @@ class TotalStatistics extends PureComponent {
                             统计结果
                         </Row>
                         <Row>
-                            <Card bordered={false}>
+                            <Card bordered={false}
+                                  className={styles.tableContext}
+                            >
                                 <Table
                                     loading={fetchStatInfoStatus}
                                     columns={columns}
                                     dataSource={tableData}
                                     // rowSelection={rowSelection}
                                     pagination={false}
+                                    // bordered = {true}
                                     scroll={{ y: 480 }}
+                                    title={() => '第四轮大摸排情况统计表（截止' + deadline + '）'}
                                     // rowClassName={record => (record.editable ? styles.editable : '')}
                                 />
                             </Card>
