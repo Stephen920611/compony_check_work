@@ -57,27 +57,22 @@ const EnumAPI = {
      */
     fetchMemberInfoList: _processAPI('/member/page'), //分页查询
     fetchMemberInfoById: _processAPI('/member/get/detail'), //根据id查询详情
+    //
+    /*
+  |----------------------------------------------------------------
+  | 连-h5-全部健康信息填报统计-相关的API地址
+  |----------------------------------------------------------------
+  */
+    // exportStatInfo: _processAPI('/stat/export-stat-info'), //GET 导出统计信息根据公司id
+    fetchTotalStatistics: _processAPI('/stat/list-data'), //统计查询
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    /*
+  |----------------------------------------------------------------
+  | 连-h5-企业健康信息填报统计-相关的API地址
+  |----------------------------------------------------------------
+  */
+    // exportStatInfo: _processAPI('/stat/export-stat-info'), //GET 导出统计信息根据公司id
+    fetchCompanyStatistics: _processAPI('/stat/list-data'), //统计查询
 
 
 

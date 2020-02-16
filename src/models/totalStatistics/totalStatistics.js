@@ -9,6 +9,7 @@ import {
     fetchTreeNode,
     // fetchJobStatisticsList,
     fetchStatInfo,
+    fetchTotalStatistics,
 } from '@/services/totalStatistics/totalStatistics';
 import T from '../../utils/T';
 
@@ -34,20 +35,11 @@ export default {
     },
 
     effects: {
-        //获取摸排工作统计页面
-        * fetchJobStatisticsListAction({params, resolve, reject}, {call, put}) {
-            try {
-                const response = yield call(fetchJobStatisticsList, params);
-                resolve(response);
-            } catch (error) {
-                reject(error);
-            }
-        },
 
         //统计查询
-        * fetchStatInfoAction({params, resolve, reject}, {call, put}) {
+        * fetchTotalStatisticsInfoAction({params, resolve, reject}, {call, put}) {
             try {
-                const response = yield call(fetchStatInfo, params);
+                const response = yield call(fetchTotalStatistics, params);
                 resolve(response);
             } catch (error) {
                 reject(error);

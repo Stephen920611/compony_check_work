@@ -43,7 +43,7 @@ import PageHeaderWrapper from '@/components/PageHeaderWrapper'; // @ 表示相�
 /* eslint react/no-multi-comp:0 */
 @connect(({companyStatistics, loading}) => ({
     companyStatistics,
-    fetchStatInfoStatus: loading.effects['companyStatistics/fetchStatInfoAction'],
+    fetchStatInfoStatus: loading.effects['companyStatistics/fetchCompanyStatisticsAction'],
     fetchTreeStatus: loading.effects['companyStatistics/fetchTreeNodeAction'],
 }))
 // class CompanyStatistics
@@ -245,7 +245,7 @@ class CompanyStatistics extends PureComponent {
                 });
                 new Promise((resolve, reject) => {
                     dispatch({
-                        type: 'companyStatistics/fetchStatInfoAction',
+                        type: 'companyStatistics/fetchCompanyStatisticsAction',
                         params,
                         resolve,
                         reject,

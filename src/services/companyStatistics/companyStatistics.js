@@ -9,8 +9,8 @@ import {postJSON, post, get} from './../../utils/core/requestTj';
 import T from './../../utils/T';
 
 //统计查询
-export async function fetchStatInfo(params = {}) {
-    return post(EnumAPI.fetchStatInfo, params);
+export async function fetchCompanyStatistics(params = {}) {
+    return post(EnumAPI.fetchCompanyStatistics, params);
 }
 
 //获取树接口
